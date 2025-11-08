@@ -127,7 +127,7 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-sm font-medium text-gray-400">Reuniões</p>
-                            <p id="kpi-reunioes" class="text-3xl font-bold text-brand-green">0</p>
+                            <p id="kpi-reunioes" class="text-3xl font-bold text-brand-green">2</p>
                         </div>
                         <div class="p-3 rounded-full bg-gray-800 text-brand-green">
                             <i data-lucide="calendar" class="w-7 h-7"></i>
@@ -159,7 +159,7 @@
                 <div id="lista-entregaveis" class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                     <a href="https://comparativoerp.netlify.app/" target="_blank" class="p-3 rounded-lg link-item flex items-center gap-2" data-category="diagnostico"><i data-lucide="arrow-right-circle" class="w-4 h-4"></i>Análise comparativa de sistemas (ERP+E-com)</a>
                     <a href="https://candidatos-vendas.netlify.app/" target="_blank" class="p-3 rounded-lg link-item flex items-center gap-2" data-category="diagnostico"><i data-lucide="arrow-right-circle" class="w-4 h-4"></i>Análise de currículos (Vendedores)</a>
-                    <a href="https://drive.google.com/drive/folders/1oDLIDMQHb_BawIIAnFllAUERfqBH1uhu?usp=sharing" target="_blank" class="p-3 rounded-lg link-item flex items-center gap-2" data-category="reuniao"><i data-lucide="arrow-right-circle" class="w-4 h-4"></i>Ata e resumos das reuniões</a>
+                    <a href="https://drive.google.com/drive/folders/1oDLIDMQHb_BawIIAnFllAUERfqBH1uhu?usp=sharing" target="_blank" class="p-3 rounded-lg link-item flex items-center gap-2"><i data-lucide="arrow-right-circle" class="w-4 h-4"></i>Ata e resumos das reuniões</a>
                     <a href="https://casasgoianita.netlify.app/" target="_blank" class="p-3 rounded-lg link-item flex items-center gap-2" data-category="diagnostico"><i data-lucide="arrow-right-circle" class="w-4 h-4"></i>Diagnóstico e proposta inicial</a>
                     <a href="https://apresentacao-conselho-goianita.netlify.app/" target="_blank" class="p-3 rounded-lg link-item flex items-center gap-2" data-category="plano"><i data-lucide="arrow-right-circle" class="w-4 h-4"></i>Estatuto do Conselho Gestor </a>
                     <a href="https://guia-entrevista-estoque.netlify.app/" target="_blank" class="p-3 rounded-lg link-item flex items-center gap-2" data-category="entregavel"><i data-lucide="arrow-right-circle" class="w-4 h-4"></i>Guia para entrevista com candidatos a estoquista</a>
@@ -185,21 +185,19 @@
     </footer>
 
     <script>
-        // Primeiro, garantimos que os ícones do Lucide sejam criados
         lucide.createIcons();
-
-        // Nosso novo script de contagem
+    </script>
+    
+    <script>
         // 'DOMContentLoaded' espera o HTML da página carregar completamente antes de executar o script
         document.addEventListener('DOMContentLoaded', () => {
             
-            // 1. Objeto para armazenar nossas contagens.
-            // As chaves (ex: 'diagnostico') DEVEM ser iguais às usadas no 'data-category'
+            // 1. Objeto para armazenar nossas contagens (Categoria 'reuniao' removida)
             const counts = {
                 diagnostico: 0,
                 entregavel: 0,
                 processo: 0,
-                plano: 0,
-                reuniao: 0
+                plano: 0
             };
 
             // 2. Encontramos todos os links que têm o atributo 'data-category'
@@ -218,12 +216,11 @@
             });
 
             // 4. Finalmente, atualizamos o HTML com os valores que contamos
-            // Usamos os 'id's que definimos lá em cima nos KPIs
+            // (A linha de 'kpi-reunioes' foi removida para não sobrescrever o valor manual)
             document.getElementById('kpi-diagnosticos').textContent = counts.diagnostico;
             document.getElementById('kpi-entregaveis').textContent = counts.entregavel;
             document.getElementById('kpi-processos').textContent = counts.processo;
             document.getElementById('kpi-planos').textContent = counts.plano;
-            document.getElementById('kpi-reunioes').textContent = counts.reuniao;
         });
     </script>
 </body>
