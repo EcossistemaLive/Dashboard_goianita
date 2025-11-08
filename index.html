@@ -260,7 +260,7 @@
                     
                     <h3 class="deliverable-heading">Manual de Implantação 5S (Estoque/Compras)</h3>
                     <div class="iframe-wrapper">
-                        <iframe class="iframe-content" src="https://manual5sestoque.netlify.app/?v=1.1" title="Manual de implantação 5S (Estoque/Compras)" loading="lazy"></iframe>
+                        <iframe class="iframe-content" src="https://manual5sestoque.netlify.app/?v=1.2" title="Manual de implantação 5S (Estoque/Compras)" loading="lazy"></iframe>
                     </div>
 
                     <h3 class="deliverable-heading">Mapeamento das Rotinas AS-IS</h3>
@@ -298,4 +298,54 @@
 
                     <h3 class="deliverable-heading">Outros Documentos de RH (Link Externo)</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                        <a href="
+                        <a href="https://docs.google.com/document/d/1n6ziNWIvcints1ViIowhRITeo62yDW8PEVudF6ysTJA/edit?usp=sharing" target="_blank" class="p-3 rounded-lg link-item flex items-center gap-2"><i data-lucide="arrow-right-circle" class="w-4 h-4"></i>Relatório de entrevistas (Google Docs)</a>
+                    </div>
+                </div>
+
+                <div class="tab-content p-6 rounded-xl kpi-card" id="tab-governanca">
+                    
+                    <h3 class="deliverable-heading">Estatuto do Conselho Gestor</h3>
+                    <div class="iframe-wrapper">
+                        <iframe class="iframe-content" src="https://apresentacao-conselho-goianita.netlify.app/" title="Estatuto do Conselho Gestor" loading="lazy"></iframe>
+                    </div>
+
+                    <h3 class="deliverable-heading">Outros Documentos de Governança (Link Externo)</h3>
+                    <a href="https://drive.google.com/drive/folders/1oDLIDMQHb_BawIIAnFllAUERfqBH1uhu?usp=sharing" target="_blank" class="p-3 rounded-lg link-item flex items-center gap-2 w-full md:w-1/2"><i data-lucide="arrow-right-circle" class="w-4 h-4"></i>Ata e resumos das reuniões (Google Drive)</a>
+                </div>
+
+            </div>
+        </section>
+        </div>
+
+    <footer class="mt-10 pt-6 border-t border-gray-700 text-center text-sm text-gray-500">
+        <p>&copy; 2025 Casa Goianita. Todos os direitos reservados.</p>
+        <p class="mt-1">Desenvolvido por Cléber Donato</p>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+    </script> 
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetId = button.getAttribute('data-tab-target');
+                    const targetContent = document.querySelector(targetId);
+
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+
+                    button.classList.add('active');
+                    if (targetContent) {
+                        targetContent.classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
