@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-Working">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard de acompanhamento da Consultoria | Casa Goianita</title>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -56,13 +56,65 @@
             background-color: rgba(0, 232, 0, 0.15);
             border-color: rgba(0, 232, 0, 0.4);
         }
+
+        /* === ESTILOS DAS ABAS === */
+        .tab-button {
+            padding: 12px 20px;
+            font-size: 0.875rem; /* 14px */
+            font-weight: 600;
+            color: #9ca3af; /* text-gray-400 */
+            border-bottom: 3px solid transparent;
+            transition: color 0.3s ease, border-color 0.3s ease;
+        }
+        .tab-button:hover {
+            color: #f3f4f6; /* text-gray-100 */
+        }
+        .tab-button.active {
+            color: var(--verde-vibrante);
+            border-bottom-color: var(--verde-vibrante);
+        }
+        .tab-content {
+            display: none; /* Esconde todas as abas por padrão */
+        }
+        .tab-content.active {
+            display: block; /* Mostra apenas a aba ativa */
+        }
+        
+        /* === ESTILOS PARA EMBUTIR CONTEÚDO (IFRAME) === */
+        
+        .deliverable-heading {
+            font-size: 1.25rem; /* 20px */
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-top: 2.5rem; /* 40px */
+            margin-bottom: 1rem; /* 16px */
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .tab-content > .deliverable-heading:first-of-type {
+            margin-top: 0;
+        }
+        .iframe-wrapper {
+            width: 100%;
+            height: 100vh; 
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden; /* Corta o iframe para as bordas */
+            background-color: #ffffff; /* Fundo branco caso a página demore a carregar */
+        }
+        .iframe-content {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
     </style>
 </head>
 <body class="text-gray-200">
+
     <div class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
 
         <header class="mb-8 fade-in">
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center">
+             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center">
                 <div>
                     <h1 class="text-3xl font-bold text-white">Dashboard de acompanhamento da Consultoria</h1>
                     <p class="text-lg text-gray-400 font-brand-secondary">Relatório de Planejamento e Entregáveis: Casa Goianita</p>
@@ -78,12 +130,11 @@
         <section class="mb-10 fade-in" style="animation-delay: 0.2s;">
             <h2 class="text-2xl font-semibold mb-4 text-white">Indicadores de Progresso</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                
                 <div class="p-6 rounded-xl kpi-card">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-sm font-medium text-gray-400">Diagnósticos e Análises</p>
-                            <p id="kpi-diagnosticos" class="text-3xl font-bold text-brand-green">0</p>
+                            <p class="text-3xl font-bold text-brand-green">5</p>
                         </div>
                         <div class="p-3 rounded-full bg-gray-800 text-brand-green">
                             <i data-lucide="search-check" class="w-7 h-7"></i>
@@ -94,7 +145,7 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-sm font-medium text-gray-400">Entregáveis e Ferramentas</p>
-                            <p id="kpi-entregaveis" class="text-3xl font-bold text-brand-green">0</p>
+                            <p class="text-3xl font-bold text-brand-green">3</p>
                         </div>
                         <div class="p-3 rounded-full bg-gray-800 text-brand-green">
                             <i data-lucide="package-check" class="w-7 h-7"></i>
@@ -105,7 +156,7 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-sm font-medium text-gray-400">Processos Mapeados</p>
-                            <p id="kpi-processos" class="text-3xl font-bold text-brand-green">0</p>
+                            <p class="text-3xl font-bold text-brand-green">2</p>
                         </div>
                         <div class="p-3 rounded-full bg-gray-800 text-brand-green">
                             <i data-lucide="git-merge" class="w-7 h-7"></i>
@@ -116,7 +167,7 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-sm font-medium text-gray-400">Planos Estratégicos</p>
-                            <p id="kpi-planos" class="text-3xl font-bold text-brand-green">0</p>
+                            <p class="text-3xl font-bold text-brand-green">1</p>
                         </div>
                         <div class="p-3 rounded-full bg-gray-800 text-brand-green">
                             <i data-lucide="file-text" class="w-7 h-7"></i>
@@ -127,7 +178,7 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-sm font-medium text-gray-400">Reuniões</p>
-                            <p id="kpi-reunioes" class="text-3xl font-bold text-brand-green">2</p>
+                            <p class="text-3xl font-bold text-brand-green">2</p>
                         </div>
                         <div class="p-3 rounded-full bg-gray-800 text-brand-green">
                             <i data-lucide="calendar" class="w-7 h-7"></i>
@@ -137,91 +188,114 @@
             </div>
         </section>
 
-        <section class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div class="lg:col-span-1 p-6 rounded-xl kpi-card fade-in" style="animation-delay: 0.4s;">
-                <h3 class="text-xl font-semibold mb-4 flex items-center gap-2 text-white"><i data-lucide="microscope" class="w-6 h-6 text-brand-green"></i>Diagnóstico e Estratégia</h3>
-                <ul class="space-y-3 text-sm">
-                    <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 mt-0.5 text-brand-green flex-shrink-0"></i><span><strong class="font-semibold text-gray-200">Proposta Inicial:</strong> Apresentação do diagnóstico e escopo da consultoria.</span></li>
-                    <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 mt-0.5 text-brand-green flex-shrink-0"></i><span><strong class="font-semibold text-gray-200">Mapeamento de Processos AS-IS:</strong> Detalhamento das rotinas atuais de estoque e compras.</span></li>
-                    <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 mt-0.5 text-brand-green flex-shrink-0"></i><span><strong class="font-semibold text-gray-200">Análise de Concorrência:</strong> Pesquisa de posicionamento digital e sugestões de campanhas.</span></li>
-                    <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 mt-0.5 text-brand-green flex-shrink-0"></i><span><strong class="font-semibold text-gray-200">Análise de Sistemas:</strong> Comparativo de ferramentas de integração ERP + E-commerce.</span></li>
-                    <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 mt-0.5 text-brand-green flex-shrink-0"></i><span><strong class="font-semibold text-gray-200">Definição de Governança:</strong> Elaboração do Estatuto do Conselho Gestor.</span></li>
-                    <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 mt-0.5 text-brand-green flex-shrink-0"></i><span><strong class="font-semibold text-gray-200">Otimização de Estoque:</strong> Criação do manual de implantação 5S.</span></li>
-                    <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 mt-0.5 text-brand-green flex-shrink-0"></i><span><strong class="font-semibold text-gray-200">Gestão de Projeto:</strong> Documentação e registro de atas e resumos de reuniões.</span></li>
-                    <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 mt-0.5 text-brand-green flex-shrink-0"></i><span><strong class="font-semibold text-gray-200">Estruturação de RH:</strong> Desenho do processo de entrevista para vendedores.</span></li>
-                    <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 mt-0.5 text-brand-green flex-shrink-0"></i><span><strong class="font-semibold text-gray-200">Análise de Candidatos:</strong> Revisão de currículos para a vaga de vendedor.</span></li>
-                </ul>
-            </div>
-
-            <div class="lg:col-span-2 p-6 rounded-xl kpi-card fade-in" style="animation-delay: 0.6s;">
-                <h3 class="text-xl font-semibold mb-4 flex items-center gap-2 text-white"><i data-lucide="wrench" class="w-6 h-6 text-brand-green"></i>Entregáveis e Ferramentas Concluídas</h3>
-                
-                <div id="lista-entregaveis" class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                    <a href="https://comparativoerp.netlify.app/" target="_blank" class="p-3 rounded-lg link-item flex items-center gap-2" data-category="diagnostico"><i data-lucide="arrow-right-circle" class="w-4 h-4"></i>Análise comparativa de sistemas (ERP+E-com)</a>
-                    <a href="https://candidatos-vendas.netlify.app/" target="_blank" class="p-3 rounded-lg link-item flex items-center gap-2" data-category="diagnostico"><i data-lucide="arrow-right-circle" class="w-4 h-4"></i>Análise de currículos (Vendedores)</a>
-                    <a href="https://drive.google.com/drive/folders/1oDLIDMQHb_BawIIAnFllAUERfqBH1uhu?usp=sharing" target="_blank" class="p-3 rounded-lg link-item flex items-center gap-2"><i data-lucide="arrow-right-circle" class="w-4 h-4"></i>Ata e resumos das reuniões</a>
-                    <a href="https://casasgoianita.netlify.app/" target="_blank" class="p-3 rounded-lg link-item flex items-center gap-2" data-category="diagnostico"><i data-lucide="arrow-right-circle" class="w-4 h-4"></i>Diagnóstico e proposta inicial</a>
-                    <a href="https://apresentacao-conselho-goianita.netlify.app/" target="_blank" class="p-3 rounded-lg link-item flex items-center gap-2" data-category="plano"><i data-lucide="arrow-right-circle" class="w-4 h-4"></i>Estatuto do Conselho Gestor </a>
-                    <a href="https://guia-entrevista-estoque.netlify.app/" target="_blank" class="p-3 rounded-lg link-item flex items-center gap-2" data-category="entregavel"><i data-lucide="arrow-right-circle" class="w-4 h-4"></i>Guia para entrevista com candidatos a estoquista</a>
-                    <a href="https://processo-entrevista.netlify.app/" target="_blank" class="p-3 rounded-lg link-item flex items-center gap-2" data-category="entregavel"><i data-lucide="arrow-right-circle" class="w-4 h-4"></i>Manual de Entrevista (Vendedores)</a>
-                    <a href="https://ecossistemalive.github.io/Manual5S/" target="_blank" class="p-3 rounded-lg link-item flex items-center gap-2" data-category="entregavel"><i data-lucide="arrow-right-circle" class="w-4 h-4"></i>Manual de implantação 5S (Estoque/Compras)</a>
-                    <a href="https://manual-recrutamento.netlify.app/" target="_blank" class="p-3 rounded-lg link-item flex items-center gap-2" data-category="entregavel"><i data-lucide="arrow-right-circle" class="w-4 h-4"></i>Manual de Recrutamento</a>
-                    <a href="https://as-is-goianita.netlify.app/" target="_blank" class="p-3 rounded-lg link-item flex items-center gap-2" data-category="processo"><i data-lucide="arrow-right-circle" class="w-4 h-4"></i>Mapeamento das rotinas AS-IS (em andamento)</a>
-                    <a href="https://pesqconc.netlify.app/" target="_blank" class="p-3 rounded-lg link-item flex items-center gap-2" data-category="diagnostico"><i data-lucide="arrow-right-circle" class="w-4 h-4"></i>Pesquisa de posicionamento (Concorrentes)</a>
-                    <a href="https://drive.google.com/drive/folders/10ww8f9Bl-Y0QuGHmEZDRv2N1-YQoV9U0?usp=sharing" target="_blank" class="p-3 rounded-lg link-item flex items-center gap-2" data-category="processo"><i data-lucide="arrow-right-circle" class="w-4 h-4"></i>Processos Financeiros Mapeados</a>
-                    <a href="https://docs.google.com/document/d/1n6ziNWIvcints1ViIowhRITeo62yDW8PEVudF6ysTJA/edit?usp=sharing" target="_blank" class="p-3 rounded-lg link-item flex items-center gap-2" data-category="diagnostico"><i data-lucide="arrow-right-circle" class="w-4 h-4"></i>Relatório de entrevistas com candidatos</a>
-                </div>
-                 <div class="mt-6 pt-4 border-t border-gray-700">
-                     <h4 class="font-semibold text-white">Conclusão e Próximos Passos</h4>
-                     <p class="text-sm mt-2 text-gray-400 font-brand-secondary">A fase inicial de <strong class="font-semibold text-gray-200">diagnóstico e estruturação</strong> está em andamento. Com os processos sendo mapeados e as análises concluídas, nosso foco agora se divide em: <strong class="font-semibold text-gray-200">validar a governança</strong> com a instauração do Conselho Gestor, <strong class="font-semibold text-gray-200">iniciar as melhorias operacionais</strong> (como o 5S), <strong class="font-semibold text-gray-200">mapeamento dos processos financeiros</strong>, avançar nas <strong class="font-semibold text-gray-200">contratações</strong> estratégicas e definir o <strong class="font-semibold text-gray-200">novo posicionamento</strong> da marca.</p>
-                 </div>
-            </div>
-        </section>
-    </div>
-
-    <footer class="mt-10 pt-6 border-t border-gray-700 text-center text-sm text-gray-500">
-        <p>&copy; 2025 Casa Goianita. Todos os direitos reservados.</p>
-        <p class="mt-1">Desenvolvido por Cléber Donato</p>
-    </footer>
-
-    <script>
-        lucide.createIcons();
-    </script>
-    
-    <script>
-        // 'DOMContentLoaded' espera o HTML da página carregar completamente antes de executar o script
-        document.addEventListener('DOMContentLoaded', () => {
+        <section class="fade-in" style="animation-delay: 0.4s;">
             
-            // 1. Objeto para armazenar nossas contagens (Categoria 'reuniao' removida)
-            const counts = {
-                diagnostico: 0,
-                entregavel: 0,
-                processo: 0,
-                plano: 0
-            };
+            <div class="flex flex-wrap border-b border-gray-700">
+                <button class="tab-button active" data-tab-target="#tab-blog">
+                    <i data-lucide="book-open" class="inline-block w-4 h-4 mr-1"></i>
+                    História do Projeto (Blog)
+                </button>
+                <button class="tab-button" data-tab-target="#tab-diagnostico">
+                    <i data-lucide="search" class="inline-block w-4 h-4 mr-1"></i>
+                    Diagnóstico e Análises
+                </button>
+                <button class="tab-button" data-tab-target="#tab-processos">
+                    <i data-lucide="git-merge" class="inline-block w-4 h-4 mr-1"></i>
+                    Processos e Operações
+                </button>
+                <button class="tab-button" data-tab-target="#tab-rh">
+                    <i data-lucide="users" class="inline-block w-4 h-4 mr-1"></i>
+                    Recrutamento e RH
+                </button>
+                <button class="tab-button" data-tab-target="#tab-governanca">
+                    <i data-lucide="clipboard-check" class="inline-block w-4 h-4 mr-1"></i>
+                    Governança e Gestão
+                </button>
+            </div>
 
-            // 2. Encontramos todos os links que têm o atributo 'data-category'
-            const links = document.querySelectorAll('[data-category]');
-
-            // 3. Iteramos (passamos por) cada link encontrado
-            links.forEach(link => {
-                // Pegamos o valor da categoria (ex: 'diagnostico')
-                const category = link.dataset.category; 
+            <div class="mt-6">
                 
-                // Verificamos se essa categoria existe no nosso objeto 'counts'
-                if (counts.hasOwnProperty(category)) {
-                    // Se existir, somamos 1
-                    counts[category]++;
-                }
-            });
+                <div class="tab-content active p-6 rounded-xl kpi-card" id="tab-blog">
+                    <h3 class="text-2xl font-semibold mb-4 text-white font-brand-secondary">A Jornada da Casa Goianita: Do Diagnóstico à Estrutura</h3>
+                    <p class="text-gray-300 mb-6 font-brand-secondary leading-relaxed">
+                        Bem-vindo ao diário de bordo da nossa consultoria. Esta jornada começou com um mergulho profundo para entender o coração da Casa Goianita. O objetivo não era apenas sugerir mudanças, mas construir, em conjunto, uma fundação sólida para o crescimento sustentável. Cada atividade listada abaixo representa um passo crucial nessa transformação.
+                    </p>
+                    <h4 class="text-xl font-semibold mb-4 flex items-center gap-2 text-white"><i data-lucide="microscope" class="w-6 h-6 text-brand-green"></i>Resumo das Atividades Realizadas</h4>
+                    <ul class="space-y-3 text-sm mb-6">
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 mt-0.5 text-brand-green flex-shrink-0"></i><span><strong class="font-semibold text-gray-200">Proposta Inicial:</strong> Apresentação do diagnóstico e escopo da consultoria.</span></li>
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 mt-0.5 text-brand-green flex-shrink-0"></i><span><strong class="font-semibold text-gray-200">Mapeamento de Processos AS-IS:</strong> Detalhamento das rotinas atuais de estoque e compras.</span></li>
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 mt-0.5 text-brand-green flex-shrink-0"></i><span><strong class="font-semibold text-gray-200">Análise de Concorrência:</strong> Pesquisa de posicionamento digital e sugestões de campanhas.</span></li>
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 mt-0.5 text-brand-green flex-shrink-0"></i><span><strong class="font-semibold text-gray-200">Análise de Sistemas:</strong> Comparativo de ferramentas de integração ERP + E-commerce.</span></li>
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 mt-0.5 text-brand-green flex-shrink-0"></i><span><strong class="font-semibold text-gray-200">Definição de Governança:</strong> Elaboração do Estatuto do Conselho Gestor.</span></li>
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 mt-0.5 text-brand-green flex-shrink-0"></i><span><strong class="font-semibold text-gray-200">Otimização de Estoque:</strong> Criação do manual de implantação 5S.</span></li>
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 mt-0.5 text-brand-green flex-shrink-0"></i><span><strong class="font-semibold text-gray-200">Gestão de Projeto:</strong> Documentação e registro de atas e resumos de reuniões.</span></li>
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 mt-0.5 text-brand-green flex-shrink-0"></i><span><strong class="font-semibold text-gray-200">Estruturação de RH:</strong> Desenho do processo de entrevista para vendedores.</span></li>
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 mt-0.5 text-brand-green flex-shrink-0"></i><span><strong class="font-semibold text-gray-200">Análise de Candidatos:</strong> Revisão de currículos para a vaga de vendedor.</span></li>
+                    </ul>
+                    <div class="mt-6 pt-4 border-t border-gray-700">
+                        <h4 class="font-semibold text-white">Conclusão e Próximos Passos</h4>
+                        <p class="text-sm mt-2 text-gray-400 font-brand-secondary">A fase inicial de <strong class="font-semibold text-gray-200">diagnóstico e estruturação</strong> está em andamento. Com os processos sendo mapeados e as análises concluídas, nosso foco agora se divide em: <strong class="font-semibold text-gray-200">validar a governança</strong> com a instauração do Conselho Gestor, <strong class="font-semibold text-gray-200">iniciar as melhorias operacionais</strong> (como o 5S), <strong class="font-semibold text-gray-200">mapeamento dos processos financeiros</strong>, avançar nas <strong class="font-semibold text-gray-200">contratações</strong> estratégicas e definir o <strong class="font-semibold text-gray-200">novo posicionamento</strong> da marca.</p>
+                    </div>
+                </div>
 
-            // 4. Finalmente, atualizamos o HTML com os valores que contamos
-            // (A linha de 'kpi-reunioes' foi removida para não sobrescrever o valor manual)
-            document.getElementById('kpi-diagnosticos').textContent = counts.diagnostico;
-            document.getElementById('kpi-entregaveis').textContent = counts.entregavel;
-            document.getElementById('kpi-processos').textContent = counts.processo;
-            document.getElementById('kpi-planos').textContent = counts.plano;
-        });
-    </script>
-</body>
-</html>
+                <div class="tab-content p-6 rounded-xl kpi-card" id="tab-diagnostico">
+                    
+                    <h3 class="deliverable-heading">Diagnóstico e Proposta Inicial</h3>
+                    <div class="iframe-wrapper">
+                        <iframe class="iframe-content" src="https://casasgoianita.netlify.app/" title="Diagnóstico e proposta inicial" loading="lazy"></iframe>
+                    </div>
+
+                    <h3 class="deliverable-heading">Análise Comparativa de Sistemas (ERP+E-com)</h3>
+                    <div class="iframe-wrapper">
+                        <iframe class="iframe-content" src="https://comparativoerp.netlify.app/" title="Análise comparativa de sistemas (ERP+E-com)" loading="lazy"></iframe>
+                    </div>
+
+                    <h3 class="deliverable-heading">Pesquisa de Posicionamento (Concorrentes)</h3>
+                    <div class="iframe-wrapper">
+                        <iframe class="iframe-content" src="https://pesqconc.netlify.app/" title="Pesquisa de posicionamento (Concorrentes)" loading="lazy"></iframe>
+                    </div>
+                </div>
+
+                <div class="tab-content p-6 rounded-xl kpi-card" id="tab-processos">
+                    
+                    <h3 class="deliverable-heading">Manual de Implantação 5S (Estoque/Compras)</h3>
+                    <div class="iframe-wrapper">
+                        <iframe class="iframe-content" src="https://manual5sestoque.netlify.app/?v=1.1" title="Manual de implantação 5S (Estoque/Compras)" loading="lazy"></iframe>
+                    </div>
+
+                    <h3 class="deliverable-heading">Mapeamento das Rotinas AS-IS</h3>
+                    <div class="iframe-wrapper">
+                        <iframe class="iframe-content" src="https://as-is-goianita.netlify.app/" title="Mapeamento das rotinas AS-IS" loading="lazy"></iframe>
+                    </div>
+                    
+                    <h3 class="deliverable-heading">Outros Documentos de Processos (Link Externo)</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                        <a href="https://drive.google.com/drive/folders/10ww8f9Bl-Y0QuGHmEZDRv2N1-YQoV9U0?usp=sharing" target="_blank" class="p-3 rounded-lg link-item flex items-center gap-2"><i data-lucide="arrow-right-circle" class="w-4 h-4"></i>Processos Financeiros Mapeados (Google Drive)</a>
+                    </div>
+                </div>
+
+                <div class="tab-content p-6 rounded-xl kpi-card" id="tab-rh">
+                    
+                    <h3 class="deliverable-heading">Análise de Currículos (Vendedores)</h3>
+                    <div class="iframe-wrapper">
+                        <iframe class="iframe-content" src="https://candidatos-vendas.netlify.app/" title="Análise de currículos (Vendedores)" loading="lazy"></iframe>
+                    </div>
+
+                    <h3 class="deliverable-heading">Manual de Recrutamento (Divulgação)</h3>
+                    <div class="iframe-wrapper">
+                        <iframe class="iframe-content" src="https://manual-recrutamento.netlify.app/" title="Manual de Recrutamento" loading="lazy"></iframe>
+                    </div>
+
+                    <h3 class="deliverable-heading">Manual de Entrevista (Vendedores)</h3>
+                    <div class="iframe-wrapper">
+                        <iframe class="iframe-content" src="https://processo-entrevista.netlify.app/" title="Manual de Entrevista (Vendedores)" loading="lazy"></iframe>
+                    </div>
+
+                    <h3 class="deliverable-heading">Guia para Entrevista com Candidatos a Estoquista</h3>
+                    <div class="iframe-wrapper">
+                        <iframe class="iframe-content" src="https://guia-entrevista-estoque.netlify.app/" title="Guia para entrevista com candidatos a estoquista" loading="lazy"></iframe>
+                    </div>
+
+                    <h3 class="deliverable-heading">Outros Documentos de RH (Link Externo)</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                        <a href="
