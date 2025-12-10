@@ -24,6 +24,7 @@
             background-color: var(--azul-petroleo);
             color: var(--cinza-claro);
             background-image: url('https://www.transparenttextures.com/patterns/cubes.png');
+            background-attachment: fixed; /* Fixa o fundo para efeito paralaxe */
         }
         .kpi-card {
             background-color: var(--card-bg);
@@ -181,7 +182,8 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-sm font-medium text-gray-400">Reuniões</p>
-                            <p class="text-3xl font-bold text-brand-green">4</p>
+                            <!-- ATUALIZADO: De 4 para 5 -->
+                            <p class="text-3xl font-bold text-brand-green">5</p>
                         </div>
                         <div class="p-3 rounded-full bg-gray-800 text-brand-green">
                             <i data-lucide="calendar" class="w-7 h-7"></i>
@@ -266,6 +268,11 @@
                             <li class="flex items-start gap-3">
                                 <i data-lucide="square" class="w-5 h-5 mt-0.5 text-gray-500 flex-shrink-0"></i>
                                 <span>Definir o novo posicionamento da marca</span>
+                            </li>
+                             <!-- NOVAS AÇÕES ADICIONADAS AQUI -->
+                             <li class="flex items-start gap-3">
+                                <i data-lucide="hammer" class="w-5 h-5 mt-0.5 text-yellow-500 flex-shrink-0"></i>
+                                <span><strong class="text-white">Revitalização Unidade T4 (Urgente):</strong> Limpeza da calçada, recolocação da fachada (marca atual), limpeza pesada (piso/paredes) e reparos de pintura.</span>
                             </li>
                             <li class="flex items-start gap-3">
                                 <i data-lucide="check-square" class="w-5 h-5 mt-0.5 text-brand-green flex-shrink-0"></i>
