@@ -1,1 +1,582 @@
-"<!DOCTYPE html> <html lang="pt-BR"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Dashboard de acompanhamento da Consultoria | Casa Goianita</title> <!-- Tailwind CSS --> <script src="https://cdn.tailwindcss.com"></script> <!-- Lucide Icons --> <script src="https://unpkg.com/lucide@latest"></script> <!-- Google Fonts: Poppins (Padrão V5) --> <link rel="preconnect" href="https://fonts.googleapis.com"> <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet"> <!-- Configuração de Tokens V5 (Live Design System) --> <script> tailwind.config = { theme: { extend: { colors: { live: { deep: '#06192a', /* Fundo Absoluto */ glass: 'rgba(10, 36, 61, 0.75)', /* Vidro Level 2 */ accent: '#00e800', /* Verde Ação */ 'accent-dim': 'rgba(0, 232, 0, 0.15)', text: '#ffffff', muted: '#cccccc', /* Leitura confortável */ border: 'rgba(255, 255, 255, 0.05)' } }, fontFamily: { sans: ['Poppins', 'sans-serif'], serif: ['Merriweather', 'serif'], }, boxShadow: { 'neon': '0 0 10px rgba(0, 232, 0, 0.15)', 'neon-hover': '0 0 25px rgba(0, 232, 0, 0.4)', 'halo': 'inset 0 0 20px rgba(0, 232, 0, 0.05)' }, animation: { 'fade-in': 'fadeIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards', } } } } </script> <style> /* === FUNDAMENTOS VISUAIS === */ body { background-color: #06192a; color: #cccccc; font-family: 'Poppins', sans-serif; overflow-x: hidden; position: relative; -webkit-font-smoothing: antialiased; } /* 1. Camada de Fundo (Escura) */ .bg-base { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -3; background: #06192a; } /* 2. Textura de Cubos (Fixa) */ .texture-layer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; background-image: url('https://www.transparenttextures.com/patterns/cubes.png'); background-attachment: fixed; opacity: 0.1; /* Começa bem escuro */ transition: opacity 0.3s; } /* 3. Efeito Flashlight (Luz do Mouse) */ .flashlight-effect { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; /* O gradiente segue as variáveis CSS definidas pelo JS */ background: radial-gradient( 800px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(0, 232, 0, 0.15), /* Luz Verde Suave */ transparent 40% ); mix-blend-mode: screen; /* Mistura para iluminar a textura abaixo */ } /* Animação de Entrada */ @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } } .animate-entry { opacity: 0; animation: fadeIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; } /* === COMPONENTES === */ /* Card "Halo" */ .kpi-card { background: var(--live-glass, rgba(10, 36, 61, 0.75)); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden; } .kpi-card::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at center, rgba(0, 232, 0, 0.1), transparent 70%); opacity: 0; transition: opacity 0.4s ease; pointer-events: none; } .kpi-card:hover { transform: translateY(-4px); border-color: rgba(0, 232, 0, 0.3); box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5); } .kpi-card:hover::before { opacity: 1; } /* Scrollbar Personalizada */ ::-webkit-scrollbar { width: 8px; } ::-webkit-scrollbar-track { background: #06192a; } ::-webkit-scrollbar-thumb { background: #1e3a5f; border-radius: 4px; } ::-webkit-scrollbar-thumb:hover { background: #00e800; } /* Botões de Aba (Ghost Neon Style) */ .tab-button { background: transparent; border: 1px solid rgba(255,255,255,0.05); color: #9ca3af; /* text-gray-400 */ transition: all 0.3s ease; font-weight: 600; cursor: pointer; } .tab-button:hover { color: #ffffff; border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.02); } .tab-button.active { background: rgba(0, 232, 0, 0.1); border-color: #00e800; color: #00e800; box-shadow: 0 0 15px rgba(0, 232, 0, 0.15); } /* Conteúdo das Abas */ .tab-content { display: none; } .tab-content.active { display: block; animation: fadeIn 0.5s ease-out; } /* Links de Documentos */ .link-item { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); transition: all 0.3s; } .link-item:hover { background: rgba(0, 232, 0, 0.05); border-color: #00e800; transform: translateX(4px); } /* Iframes */ .iframe-wrapper { border: 1px solid rgba(255, 255, 255, 0.05); background: #ffffff; /* Fallback branco para documentos */ border-radius: 0.75rem; overflow: hidden; transition: border-color 0.3s; } .iframe-wrapper:hover { border-color: rgba(255, 255, 255, 0.2); } .iframe-content { width: 100%; height: 100%; border: none; } .text-brand-green { color: var(--live-accent); } .deliverable-heading { font-size: 1.25rem; font-weight: 600; color: white; margin-top: 2.5rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); } </style> </head> <body class="antialiased text-gray-200"> <!-- Camadas de Fundo (Flashlight System) --> <div class="bg-base"></div> <div class="texture-layer"></div> <div class="flashlight-effect"></div> <div class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 relative z-10"> <!-- Header --> <header class="mb-8 animate-entry"> <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center"> <div> <h1 class="text-3xl font-bold text-white tracking-tight">Dashboard de acompanhamento da Consultoria</h1> <p class="text-lg text-gray-400 font-serif">Relatório de Planejamento e Entregáveis: Casa Goianita</p> </div> <div class="text-sm text-gray-400 mt-4 sm:mt-0 text-left sm:text-right"> <p><strong class="font-semibold text-gray-200">Período:</strong> outubro de 2025 à março de 2026</p> <img src="https://raw.githubusercontent.com/EcossistemaLive/Dashboard_goianita/main/Logo%20Live-26.png" alt="Logo Live Consultoria" class="h-10 mt-2 ml-auto opacity-80 hover:opacity-100 transition-opacity"> </div> </div> <div class="mt-4 border-b border-gray-700"></div> </header> <!-- KPI Section (Indicadores) --> <section class="mb-10 animate-entry" style="animation-delay: 0.2s;"> <h2 class="text-2xl font-semibold mb-4 text-white">Indicadores de Progresso</h2> <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6"> <!-- KPI 1 --> <div class="p-6 rounded-xl kpi-card group"> <div class="flex items-center justify-between relative z-10"> <div> <p class="text-sm font-medium text-gray-400">Diagnósticos e Análises</p> <p class="text-3xl font-bold text-brand-green">5</p> </div> <div class="p-3 rounded-full bg-gray-800 text-brand-green group-hover:bg-live-accent/20 transition-colors"> <i data-lucide="search-check" class="w-7 h-7"></i> </div> </div> </div> <!-- KPI 2 --> <div class="p-6 rounded-xl kpi-card group"> <div class="flex items-center justify-between relative z-10"> <div> <p class="text-sm font-medium text-gray-400 whitespace-nowrap">Entregáveis e Ferramentas</p> <p class="text-3xl font-bold text-brand-green">17</p> </div> <div class="p-3 rounded-full bg-gray-800 text-brand-green group-hover:bg-live-accent/20 transition-colors"> <i data-lucide="package-check" class="w-7 h-7"></i> </div> </div> </div> <!-- KPI 3 --> <div class="p-6 rounded-xl kpi-card group"> <div class="flex items-center justify-between relative z-10"> <div> <p class="text-sm font-medium text-gray-400">Processos Mapeados</p> <p class="text-3xl font-bold text-brand-green">5</p> </div> <div class="p-3 rounded-full bg-gray-800 text-brand-green group-hover:bg-live-accent/20 transition-colors"> <i data-lucide="git-merge" class="w-7 h-7"></i> </div> </div> </div> <!-- KPI 4 --> <div class="p-6 rounded-xl kpi-card group"> <div class="flex items-center justify-between relative z-10"> <div> <p class="text-sm font-medium text-gray-400">Planos Estratégicos</p> <p class="text-3xl font-bold text-brand-green">1</p> </div> <div class="p-3 rounded-full bg-gray-800 text-brand-green group-hover:bg-live-accent/20 transition-colors"> <i data-lucide="file-text" class="w-7 h-7"></i> </div> </div> </div> <!-- KPI 5 (Atualizado para 8) --> <div class="p-6 rounded-xl kpi-card group"> <div class="flex items-center justify-between relative z-10"> <div> <p class="text-sm font-medium text-gray-400">Reuniões</p> <p class="text-3xl font-bold text-brand-green">8</p> </div> <div class="p-3 rounded-full bg-gray-800 text-brand-green group-hover:bg-live-accent/20 transition-colors"> <i data-lucide="calendar" class="w-7 h-7"></i> </div> </div> </div> </div> </section> <!-- Main Content Area --> <section class="animate-entry" style="animation-delay: 0.4s;"> <!-- Navigation Tabs --> <div class="flex flex-wrap gap-2 mb-6 border-b border-gray-700 pb-2"> <button class="tab-button active px-4 py-3 rounded-lg text-sm flex items-center gap-2" data-tab-target="#tab-blog"> <i data-lucide="book-open" class="w-4 h-4"></i> História do Projeto (Blog) </button> <button class="tab-button px-4 py-3 rounded-lg text-sm flex items-center gap-2" data-tab-target="#tab-diagnostico"> <i data-lucide="search" class="w-4 h-4"></i> Diagnóstico e Análises </button> <button class="tab-button px-4 py-3 rounded-lg text-sm flex items-center gap-2" data-tab-target="#tab-processos"> <i data-lucide="git-merge" class="w-4 h-4"></i> Processos e Operações </button> <button class="tab-button px-4 py-3 rounded-lg text-sm flex items-center gap-2" data-tab-target="#tab-estoque"> <i data-lucide="package-search" class="w-4 h-4"></i> Rotina Estoque (5S) </button> <button class="tab-button px-4 py-3 rounded-lg text-sm flex items-center gap-2" data-tab-target="#tab-treinamento"> <i data-lucide="graduation-cap" class="w-4 h-4"></i> Materiais de Treinamento </button> <button class="tab-button px-4 py-3 rounded-lg text-sm flex items-center gap-2" data-tab-target="#tab-rh"> <i data-lucide="users" class="w-4 h-4"></i> Recrutamento e RH </button> <button class="tab-button px-4 py-3 rounded-lg text-sm flex items-center gap-2" data-tab-target="#tab-governanca"> <i data-lucide="clipboard-check" class="w-4 h-4"></i> Governança e Gestão </button> <button class="tab-button px-4 py-3 rounded-lg text-sm flex items-center gap-2" data-tab-target="#tab-backlog"> <i data-lucide="list-checks" class="w-4 h-4"></i> Backlog </button> <button class="tab-button px-4 py-3 rounded-lg text-sm flex items-center gap-2" data-tab-target="#tab-site-listas"> <i data-lucide="clipboard-list" class="w-4 h-4"></i> Levantamento de Requisitos para o Site de listas </button> </div> <!-- Content Container --> <div class="mt-6"> <!-- TAB: BLOG --> <div class="tab-content active p-6 rounded-xl kpi-card" id="tab-blog"> <h3 class="text-2xl font-semibold mb-4 text-white font-serif">A Jornada da Casa Goianita: Do Diagnóstico à Estrutura</h3> <p class="text-gray-300 mb-6 font-serif leading-relaxed"> Bem-vindo ao diário de bordo da nossa consultoria. Esta jornada começou com um mergulho profundo para entender o coração da Casa Goianita. O objetivo não era apenas sugerir mudanças, mas construir, em conjunto, uma fundação sólida para o crescimento sustentável. Cada atividade listada abaixo representa um passo crucial nessa transformação. </p> <h4 class="text-xl font-semibold mb-4 flex items-center gap-2 text-white"><i data-lucide="microscope" class="w-6 h-6 text-brand-green"></i>Resumo das Atividades Realizadas</h4> <ul class="space-y-3 text-sm mb-6"> <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 mt-0.5 text-brand-green flex-shrink-0"></i><span><strong class="font-semibold text-gray-200">Proposta Inicial:</strong> Apresentação do diagnóstico e escopo da consultoria.</span></li> <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 mt-0.5 text-brand-green flex-shrink-0"></i><span><strong class="font-semibold text-gray-200">Mapeamento de Processos AS-IS:</strong> Detalhamento das rotinas atuais de estoque e compras.</span></li> <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 mt-0.5 text-brand-green flex-shrink-0"></i><span><strong class="font-semibold text-gray-200">Análise de Concorrência:</strong> Pesquisa de posicionamento digital e sugestões de campanhas.</span></li> <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 mt-0.5 text-brand-green flex-shrink-0"></i><span><strong class="font-semibold text-gray-200">Análise de Sistemas:</strong> Comparativo de ferramentas de integração ERP + E-commerce.</span></li> <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 mt-0.5 text-brand-green flex-shrink-0"></i><span><strong class="font-semibold text-gray-200">Definição de Governança:</strong> Elaboração do Estatuto do Conselho Gestor.</span></li> <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 mt-0.5 text-brand-green flex-shrink-0"></i><span><strong class="font-semibold text-gray-200">Otimização de Estoque:</strong> Criação do manual de implantação 5S.</span></li> <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 mt-0.5 text-brand-green flex-shrink-0"></i><span><strong class="font-semibold text-gray-200">Gestão de Projeto:</strong> Documentação e registro de atas e resumos de reuniões.</span></li> <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 mt-0.5 text-brand-green flex-shrink-0"></i><span><strong class="font-semibold text-gray-200">Estruturação de RH:</strong> Desenho do processo de entrevista para vendedores.</span></li> <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 mt-0.5 text-brand-green flex-shrink-0"></i><span><strong class="font-semibold text-gray-200">Análise de Candidatos:</strong> Revisão de currículos para a vaga de vendedor.</span></li> <li class="flex items-start gap-3"><i data-lucide="user-check" class="w-5 h-5 mt-0.5 text-brand-green flex-shrink-0"></i><span><strong class="font-semibold text-gray-200">Contratação Realizada:</strong> Seleção e contratação da vendedora Elayne (T4) seguindo rigorosamente o novo Manual de Recrutamento e Seleção.</span></li> <li class="flex items-start gap-3"><i data-lucide="user-check" class="w-5 h-5 mt-0.5 text-brand-green flex-shrink-0"></i><span><strong class="font-semibold text-gray-200">Contratação Realizada:</strong> Seleção e contratação da operadora de caixa Ana Paula para a unidade 135.</span></li> <li class="flex items-start gap-3"><i data-lucide="user-check" class="w-5 h-5 mt-0.5 text-brand-green flex-shrink-0"></i><span><strong class="font-semibold text-gray-200">Contratação Realizada:</strong> Seleção e contratação do vendedor Pedro para a unidade T4.</span></li> </ul> <div class="mt-6 pt-4 border-t border-gray-700"> <h4 class="font-semibold text-white">Conclusão e Próximos Passos</h4> <p class="text-sm mt-2 mb-4 text-gray-400 font-serif">A fase inicial de <strong class="font-semibold text-gray-200">diagnóstico e estruturação</strong> está em andamento. Com a contratação de Elayne Silva, Ana Paula, Pedro e os processos mapeados, nosso foco se volta para a execução e regularização.</p> <ul class="space-y-2 text-sm text-gray-300"> <li class="flex items-start gap-3"> <i data-lucide="square" class="w-5 h-5 mt-0.5 text-gray-500 flex-shrink-0"></i> <span>Validar a governança com a instauração do Conselho Gestor</span> </li> <li class="flex items-start gap-3"> <i data-lucide="check-square" class="w-5 h-5 mt-0.5 text-brand-green flex-shrink-0"></i> <span>Iniciar as melhorias operacionais (implantação 5S)</span> </li> <li class="flex items-start gap-3"> <i data-lucide="square" class="w-5 h-5 mt-0.5 text-gray-500 flex-shrink-0"></i> <span>Mapeamento dos processos financeiros (TO-BE detalhado)</span> </li> <li class="flex items-start gap-3"> <i data-lucide="check-square" class="w-5 h-5 mt-0.5 text-brand-green flex-shrink-0"></i> <span>Integração e treinamento das novas contratações (Elayne, Ana Paula e Pedro)</span> </li> <li class="flex items-start gap-3"> <i data-lucide="square" class="w-5 h-5 mt-0.5 text-gray-500 flex-shrink-0"></i> <span>Definir o novo posicionamento da marca</span> </li> <li class="flex items-start gap-3"> <i data-lucide="hammer" class="w-5 h-5 mt-0.5 text-yellow-500 flex-shrink-0"></i> <span><strong class="text-white">Revitalização Unidade T4 (Urgente):</strong> Limpeza da calçada, recolocação da fachada (marca atual), limpeza pesada (piso/paredes) e reparos de pintura.</span> </li> <li class="flex items-start gap-3"> <i data-lucide="check-square" class="w-5 h-5 mt-0.5 text-brand-green flex-shrink-0"></i> <span>Verificação do Registro da Marca (INPI) e regularização</span> </li> <li class="flex items-start gap-3"> <i data-lucide="square" class="w-5 h-5 mt-0.5 text-gray-500 flex-shrink-0"></i> <span>Processo de branding com o Sebrae</span> </li> </ul> </div> </div> <!-- TAB: DIAGNOSTICO --> <div class="tab-content p-6 rounded-xl kpi-card" id="tab-diagnostico"> <h3 class="deliverable-heading">Diagnóstico e Proposta Inicial</h3> <div class="iframe-wrapper h-[600px]"> <iframe class="iframe-content" src="https://casasgoianita.netlify.app/" title="Diagnóstico e proposta inicial" loading="lazy"></iframe> </div> <h3 class="deliverable-heading">Análise Comparativa de Sistemas (ERP+E-com)</h3> <div class="iframe-wrapper h-[600px]"> <iframe class="iframe-content" src="https://comparativoerp.netlify.app/" title="Análise comparativa de sistemas (ERP+E-com)" loading="lazy"></iframe> </div> <h3 class="deliverable-heading">Pesquisa de Posicionamento (Concorrentes)</h3> <div class="iframe-wrapper h-[600px]"> <iframe class="iframe-content" src="https://pesqconc.netlify.app/" title="Pesquisa de posicionamento (Concorrentes)" loading="lazy"></iframe> </div> </div> <!-- TAB: PROCESSOS --> <div class="tab-content p-6 rounded-xl kpi-card" id="tab-processos"> <h3 class="deliverable-heading">Manual de Implantação 5S (Estoque/Compras)</h3> <div class="iframe-wrapper h-[500px]"> <iframe class="iframe-content" src="https://manual5sestoque.netlify.app/?v=1.2" title="Manual de implantação 5S (Estoque/Compras)" loading="lazy"></iframe> </div> <h3 class="deliverable-heading">Mapeamento das Rotinas AS-IS (Atual)</h3> <div class="iframe-wrapper h-[500px]"> <iframe class="iframe-content" src="https://as-is-goianita.netlify.app/" title="Mapeamento das rotinas AS-IS" loading="lazy"></iframe> </div> <h3 class="deliverable-heading">Processo TO-BE (Vendas)</h3> <div class="iframe-wrapper h-[500px]"> <iframe class="iframe-content" src="https://ecossistemalive.github.io/to-be-vendas-goianita/" title="TO-BE do Departamento de Vendas" loading="lazy"></iframe> </div> <h3 class="deliverable-heading">Processo TO-BE (Compras)</h3> <div class="iframe-wrapper h-[500px]"> <iframe class="iframe-content" src="https://ecossistemalive.github.io/to-be-compras-goianita/" title="TO-BE do Departamento de Compras" loading="lazy"></iframe> </div> <h3 class="deliverable-heading">Processo TO-BE (Financeiro)</h3> <div class="iframe-wrapper h-[500px]"> <iframe class="iframe-content" src="https://ecossistemalive.github.io/to-be-financeiro-goianita/" title="TO-BE do Departamento Financeiro" loading="lazy"></iframe> </div> <h3 class="deliverable-heading">Outros Documentos de Processos (Link Externo)</h3> <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm"> <a href="https://drive.google.com/drive/folders/10ww8f9Bl-Y0QuGHmEZDRv2N1-YQoV9U0?usp=sharing" target="_blank" class="p-3 rounded-lg link-item flex items-center gap-2"><i data-lucide="arrow-right-circle" class="w-4 h-4"></i>Processos Financeiros Mapeados (Google Drive)</a> <a href="https://docs.google.com/document/d/1UFlns3FNY7ssFrgOHWasZBu5zR5lB52hx_EvrqcE57s/edit?usp=sharing" target="_blank" class="p-3 rounded-lg link-item flex items-center gap-2"><i data-lucide="file-text" class="w-4 h-4"></i>Ficha de orientação para o Vendedor</a> <a href="https://drive.google.com/drive/folders/1utTXDVs1CUu3lrGNbwtT0MfZxjZq2YsL?usp=sharing" target="_blank" class="p-3 rounded-lg link-item flex items-center gap-2"><i data-lucide="arrow-right-circle" class="w-4 h-4"></i>Acompanhamento da implantação - Olist</a> </div> <h3 class="deliverable-heading">Status da Implantação ERP - Olist</h3> <ul class="space-y-3 text-sm mb-6"> <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 mt-0.5 text-brand-green flex-shrink-0"></i><span><strong class="font-semibold text-gray-200">Configurações realizadas (válidas para todas as lojas):</strong></span></li> <li class="flex items-start gap-3 ml-6"><i data-lucide="check" class="w-5 h-5 mt-0.5 text-brand-green flex-shrink-0"></i><span>Cadastro completo dos dados da empresa (CNPJ, Razão Social, Endereço, contatos, CNAE, Inscrições Estadual e Municipal);</span></li> <li class="flex items-start gap-3 ml-6"><i data-lucide="check" class="w-5 h-5 mt-0.5 text-brand-green flex-shrink-0"></i><span>Certificado digital cadastrado e testado;</span></li> <li class="flex items-start gap-3 ml-6"><i data-lucide="check" class="w-5 h-5 mt-0.5 text-brand-green flex-shrink-0"></i><span>Naturezas de Operação de entrada e saída configuradas em conjunto com a equipe de contabilidade;</span></li> <li class="flex items-start gap-3 ml-6"><i data-lucide="check" class="w-5 h-5 mt-0.5 text-brand-green flex-shrink-0"></i><span>Ambiente de testes de emissão de notas fiscais validado;</span></li> <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 mt-0.5 text-brand-green flex-shrink-0"></i><span><strong class="font-semibold text-gray-200">Assinatura Olist adicional:</strong> Contratação de nova licença para atender o CNPJ da Castor.</span></li> </ul> </div> <!-- TAB: ESTOQUE (NOVA ABA) --> <div class="tab-content p-6 rounded-xl kpi-card" id="tab-estoque"> <h3 class="deliverable-heading">Cronograma e Rotina de Estoque (5S)</h3> <div class="iframe-wrapper h-[800px]"> <iframe id="iframe-estoque-content" class="iframe-content" loading="lazy"></iframe> </div> </div> <!-- TAB: TREINAMENTO --> <div class="tab-content p-6 rounded-xl kpi-card" id="tab-treinamento"> <h3 class="deliverable-heading">Materiais Didáticos e Manuais de Treinamento</h3> <p class="text-gray-400 mb-6 font-serif">Recursos desenvolvidos para a capacitação das equipes e padronização do ambiente de trabalho.</p> <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm"> <a href="https://drive.google.com/file/d/1LezPS56TU-UYPzIyGKTDiz_PAZUsuuh2/view?usp=sharing" target="_blank" class="p-4 rounded-lg link-item flex flex-col items-start gap-3 group"> <div class="flex items-center gap-2 w-full"> <div class="p-2 bg-blue-900/30 rounded-lg text-blue-400 group-hover:bg-blue-900/50 transition-colors"> <i data-lucide="presentation" class="w-6 h-6"></i> </div> <span class="font-semibold text-lg text-gray-200">Treinamento de Estoquistas (5S)</span> </div> <p class="text-gray-400">Material completo para capacitação da equipe de estoque na metodologia 5S, focando em organização e disciplina.</p> <span class="text-brand-green text-xs font-semibold mt-auto flex items-center gap-1">Acessar Material <i data-lucide="external-link" class="w-3 h-3"></i></span> </a> <a href="https://drive.google.com/file/d/1Lahtlw_eIDO_hFa8PNKCb_HvDSgIhrD3/view?usp=sharing" target="_blank" class="p-4 rounded-lg link-item flex flex-col items-start gap-3 group"> <div class="flex items-center gap-2 w-full"> <div class="p-2 bg-purple-900/30 rounded-lg text-purple-400 group-hover:bg-purple-900/50 transition-colors"> <i data-lucide="book-open" class="w-6 h-6"></i> </div> <span class="font-semibold text-lg text-gray-200">Manual de Organização</span> </div> <p class="text-gray-400">Guia de padronização para ambientes de trabalho, estabelecendo as regras de convivência e organização.</p> <span class="text-brand-green text-xs font-semibold mt-auto flex items-center gap-1">Acessar Manual <i data-lucide="external-link" class="w-3 h-3"></i></span> </a> </div> <h3 class="deliverable-heading">Ferramentas de Marketing e Engajamento</h3> <p class="text-gray-400 mb-6 font-serif">Recursos para interação com clientes e promoção da marca.</p> <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm"> <a href="https://chama-pro-vip.netlify.app/" target="_blank" class="p-3 rounded-lg link-item flex items-center gap-2"> <i data-lucide="link" class="w-4 h-4"></i> Formulário Automatizado para Sorteio </a> <a href="https://drive.google.com/file/d/1b3iUKI_RGlD0KcBHjKn2DKPztAq60V_x/view?usp=drive_link" target="_blank" class="p-3 rounded-lg link-item flex items-center gap-2"> <i data-lucide="video" class="w-4 h-4"></i> Vídeo Explicativo do Formulário </a> </div> </div> <!-- TAB: RH --> <div class="tab-content p-6 rounded-xl kpi-card" id="tab-rh"> <h3 class="deliverable-heading">Análise de Currículos (Vendedores)</h3> <div class="iframe-wrapper h-[500px]"> <iframe class="iframe-content" src="https://candidatos-vendas.netlify.app/" title="Análise de currículos (Vendedores)" loading="lazy"></iframe> </div> <h3 class="deliverable-heading">Manual de Recrutamento (Divulgação)</h3> <div class="iframe-wrapper h-[500px]"> <iframe class="iframe-content" src="https://manual-recrutamento.netlify.app/" title="Manual de Recrutamento" loading="lazy"></iframe> </div> <h3 class="deliverable-heading">Manual de Entrevista (Vendedores)</h3> <div class="iframe-wrapper h-[500px]"> <iframe class="iframe-content" src="https://processo-entrevista.netlify.app/" title="Manual de Entrevista (Vendedores)" loading="lazy"></iframe> </div> <h3 class="deliverable-heading">Guia para Entrevista com Candidatos a Estoquista</h3> <div class="iframe-wrapper h-[500px]"> <iframe class="iframe-content" src="https://guia-entrevista-estoque.netlify.app/" title="Guia para entrevista com candidatos a estoquista" loading="lazy"></iframe> </div> <h3 class="deliverable-heading">Outros Documentos de RH (Link Externo)</h3> <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm"> <a href="https://docs.google.com/document/d/1n6ziNWIvcints1ViIowhRITeo62yDW8PEVudF6ysTJA/edit?usp=sharing" target="_blank" class="p-3 rounded-lg link-item flex items-center gap-2"><i data-lucide="arrow-right-circle" class="w-4 h-4"></i>Relatório de entrevistas (Google Docs)</a> </div> </div> <!-- TAB: GOVERNANÇA --> <div class="tab-content p-6 rounded-xl kpi-card" id="tab-governanca"> <h3 class="deliverable-heading">Estatuto do Conselho Gestor</h3> <div class="iframe-wrapper h-[700px]"> <iframe class="iframe-content" src="https://apresentacao-conselho-goianita.netlify.app/" title="Estatuto do Conselho Gestor" loading="lazy"></iframe> </div> <h3 class="deliverable-heading">Outros Documentos de Governança (Link Externo)</h3> <a href="https://drive.google.com/drive/folders/1oDLIDMQHb_BawIIAnFllAUERfqBH1uhu?usp=sharing" target="_blank" class="p-3 rounded-lg link-item flex items-center gap-2 w-full md:w-1/2"><i data-lucide="arrow-right-circle" class="w-4 h-4"></i>Ata e resumos das reuniões (Google Drive)</a> </div> <!-- TAB: BACKLOG --> <div class="tab-content p-6 rounded-xl kpi-card" id="tab-backlog"> <h3 class="deliverable-heading">Sugestões de Implementação (Backlog)</h3> <ul class="space-y-3 text-sm mb-6"> <li class="flex items-start gap-3"><i data-lucide="square" class="w-5 h-5 mt-0.5 text-gray-500 flex-shrink-0"></i><span>Treinamento comercial baseado na nova visão da empresa.</span></li> <li class="flex items-start gap-3"><i data-lucide="square" class="w-5 h-5 mt-0.5 text-gray-500 flex-shrink-0"></i><span>Treinamento sobre comportamento e postura da liderança (urgente).</span></li> <li class="flex items-start gap-3"><i data-lucide="square" class="w-5 h-5 mt-0.5 text-gray-500 flex-shrink-0"></i><span>Estabelecer rotina de descompressão, motivação e escuta ativa dos colaboradores.</span></li> <li class="flex items-start gap-3"><i data-lucide="square" class="w-5 h-5 mt-0.5 text-gray-500 flex-shrink-0"></i><span>Estabelecer gameficações agressivas para vendedores integrando com campanhas de Marketing.</span></li> </ul> </div> <!-- TAB: SITE LISTAS --> <div class="tab-content p-6 rounded-xl kpi-card" id="tab-site-listas"> <h3 class="deliverable-heading">Briefing Técnico: Levantamento de Requisitos para o Módulo E-commerce & Listas</h3> <div class="iframe-wrapper h-[800px]"> <iframe class="iframe-content" src="https://ecossistemalive.github.io/briefing_listas/" title="Briefing Técnico para o Módulo E-commerce & Listas" loading="lazy"></iframe> </div> <h3 class="deliverable-heading">Briefing Adicional: Levantamento de Requisitos para Listas de Casamento</h3> <div class="iframe-wrapper h-[800px]"> <iframe class="iframe-content" src="https://ecossistemalive.github.io/Briefing-Listas/" title="Briefing Detalhado para Listas de Casamento" loading="lazy"></iframe> </div> </div> </div> </section> <!-- Footer --> <footer class="mt-16 text-center border-t border-white/5 pt-8 pb-8"> <p class="text-live-muted text-sm font-light"> © 2026 Live Consultoria. Documento confidencial para uso interno da Casa Goianita. </p> </footer> </div> <!-- Scripts de Interatividade --> <script> document.addEventListener('DOMContentLoaded', () => { // Inicializa ícones lucide.createIcons(); // Tabs Logic const tabButtons = document.querySelectorAll('[data-tab-target]'); const tabContents = document.querySelectorAll('.tab-content'); tabButtons.forEach(button => { button.addEventListener('click', () => { tabButtons.forEach(btn => btn.classList.remove('active')); tabContents.forEach(content => content.classList.remove('active')); button.classList.add('active'); const target = document.querySelector(button.dataset.tabTarget); target.classList.add('active'); }); }); // Flashlight Effect Logic const flashlight = document.querySelector('.flashlight-effect'); if (flashlight) { document.addEventListener('mousemove', (e) => { // Atualiza as variáveis CSS com a posição do mouse document.documentElement.style.setProperty('--mouse-x', `${e.clientX}px`); document.documentElement.style.setProperty('--mouse-y', `${e.clientY}px`); }); } // Injeta o conteúdo da aba Estoque (Código fornecido pelo usuário) const estoqueHTML = `<!DOCTYPE html> <html lang="pt-BR"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Cronograma de Estoque | Casa Goianita 2026</title> <script src="https://unpkg.com/lucide@latest"><\/script> <style> /* --- LIVE DESIGN SYSTEM V6.0 --- */ :root { /* Atmosfera */ --live-deep: #06192a; --live-darker: #04121f; /* Superfícies (Refractive Glass) */ --live-glass: rgba(10, 36, 61, 0.70); --live-glass-hover: rgba(15, 45, 75, 0.85); --glass-blur: blur(16px) saturate(180%); /* Luz & Ação */ --live-accent: #00e800; --live-accent-dim: rgba(0, 232, 0, 0.15); --text-primary: #ffffff; --text-secondary: #94a3b8; --text-tertiary: #64748b; /* Gradiente Cinético */ --kinetic-gradient: linear-gradient(90deg, #ffffff 0%, #cccccc 50%, #00e800 100%); /* Bordas */ --border-subtle: rgba(255, 255, 255, 0.08); --border-active: rgba(0, 232, 0, 0.4); /* Animação */ --ease-fluid: cubic-bezier(0.4, 0.0, 0.2, 1); } * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', system-ui, -apple-system, sans-serif; } body { background-color: var(--live-deep); color: var(--text-primary); min-height: 100vh; line-height: 1.6; /* Textura de Fundo: CUBOS WIREFRAME (Linhas Finas) */ /* SVG pattern para garantir geometria perfeita de linhas */ background-image: url("data:image/svg+xml,%3Csvg width='40' height='46' viewBox='0 0 40 46' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg stroke='%23ffffff' stroke-width='0.5' stroke-opacity='0.08'%3E%3Cpath d='M0 46V23l20-11.5L40 23v23L20 34.5zM0 23L20 11.5 40 23 20 34.5zM20 11.5L0 0 40 0z' /%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); background-attachment: fixed; } /* --- LAYOUT & TYPOGRAPHY --- */ .container { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; } header { margin-bottom: 3rem; text-align: center; } h1 { font-size: 2.5rem; font-weight: 800; letter-spacing: -0.05em; background: var(--kinetic-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 0.5rem; } h2 { font-size: 1.5rem; color: var(--text-primary); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem; } .subtitle { color: var(--text-secondary); font-size: 1.1rem; } /* --- COMPONENTS: GLASS CARDS --- */ .glass-card { background: var(--live-glass); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border: 1px solid var(--border-subtle); border-radius: 16px; padding: 1.5rem; margin-bottom: 2rem; transition: all 0.3s var(--ease-fluid); position: relative; overflow: hidden; } .glass-card:hover { background: var(--live-glass-hover); border-color: var(--border-active); box-shadow: 0 0 30px rgba(0, 232, 0, 0.05); transform: translateY(-2px); } /* --- BUTTONS --- */ .btn-action { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(0, 232, 0, 0.1); color: var(--live-accent); padding: 0.6rem 1.2rem; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.95rem; border: 1px solid rgba(0, 232, 0, 0.2); transition: all 0.2s; cursor: pointer; } .btn-action:hover { background: rgba(0, 232, 0, 0.2); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0, 232, 0, 0.1); } .btn-ghost { background: transparent; border: 1px solid var(--border-subtle); color: var(--text-secondary); padding: 0.4rem 1rem; border-radius: 6px; font-size: 0.85rem; cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; transition: 0.2s; margin-top: 1rem; } .btn-ghost:hover { border-color: var(--live-accent); color: var(--live-accent); } /* --- EXPANDABLE PROCEDURES --- */ .procedure-box { display: none; /* Hidden by default */ margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.2); border-radius: 8px; border: 1px dashed var(--border-subtle); } .procedure-step { display: flex; gap: 1rem; margin-bottom: 1rem; align-items: flex-start; } .step-num { background: var(--live-accent); color: #000; font-weight: 800; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0; margin-top: 2px; } .step-text { color: var(--text-secondary); font-size: 0.9rem; } .step-text strong { color: var(--text-primary); display: block; margin-bottom: 0.2rem; } .divergence-alert { background: rgba(255, 69, 58, 0.1); border-left: 3px solid #ff453a; padding: 0.75rem; font-size: 0.85rem; color: #ffcccb; margin-top: 0.5rem; border-radius: 4px; } /* --- EFICIÊNCIA ALERT --- */ .efficiency-alert { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(255, 255, 255, 0.05); border-left: 2px solid var(--live-accent); border-radius: 0 4px 4px 0; font-size: 0.85rem; color: var(--text-secondary); } .efficiency-alert strong { color: var(--live-accent); } /* --- TEAM SECTION --- */ .team-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; } .team-badge { display: inline-flex; align-items: center; background: var(--live-accent-dim); color: var(--live-accent); padding: 0.25rem 0.75rem; border-radius: 99px; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; border: 1px solid rgba(0, 232, 0, 0.2); } .team-names { font-size: 1.25rem; font-weight: 500; } /* --- TIMELINE SECTION --- */ .timeline-item { display: flex; gap: 1.5rem; margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border-subtle); } .timeline-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; } .time-block { min-width: 120px; text-align: right; } .time { font-weight: 700; color: var(--live-accent); font-size: 1.1rem; } .phase { font-size: 0.85rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; } .content h3 { margin-bottom: 0.5rem; font-size: 1.1rem; } .content ul { list-style: none; } .content li { position: relative; padding-left: 1.25rem; margin-bottom: 0.85rem; color: var(--text-primary); font-size: 0.95rem; } .content li::before { content: "•"; color: var(--live-accent); position: absolute; left: 0; font-weight: bold; } .instruction { display: block; color: var(--text-secondary); font-size: 0.85rem; font-style: italic; margin-top: 4px; background: rgba(255,255,255,0.03); padding: 4px 8px; border-radius: 4px; border-left: 2px solid var(--text-tertiary); } /* --- LOGISTICS WARNING --- */ .logistics-box { background: linear-gradient(90deg, rgba(0, 232, 0, 0.05) 0%, transparent 100%); border-left: 4px solid var(--live-accent); padding: 1rem 1.5rem; border-radius: 0 8px 8px 0; margin: 1.5rem 0; } .logistics-title { color: var(--live-accent); font-weight: 700; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; } /* --- WEEKLY GRID --- */ .weekly-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; } .day-card { background: rgba(255, 255, 255, 0.03); padding: 1.25rem; border-radius: 12px; border: 1px solid transparent; transition: 0.3s; } .day-card:hover { border-color: var(--border-active); background: rgba(255, 255, 255, 0.05); } .day-header { color: var(--live-accent); font-weight: 700; text-transform: uppercase; font-size: 0.9rem; margin-bottom: 0.5rem; display: flex; justify-content: space-between; } .day-focus { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-primary); } .day-action { font-size: 0.9rem; color: var(--text-secondary); } /* --- MOBILE --- */ @media (max-width: 768px) { h1 { font-size: 2rem; } .timeline-item { flex-direction: column; gap: 0.5rem; } .time-block { text-align: left; display: flex; align-items: baseline; gap: 0.5rem; } } </style> </head> <body> <div class="container"> <!-- Header --> <header> <h1>Gestão de Estoque 5S</h1> <p class="subtitle">Casa Goianita • Manual de Operações & Rotinas 2026</p> <div style="margin-top: 1.5rem;"> <a href="https://drive.google.com/file/d/1LezPS56TU-UYPzIyGKTDiz_PAZUsuuh2/view?usp=sharing" target="_blank" class="btn-action"> <i data-lucide="book-open" size="18"></i> Acessar Manual 5S Completo </a> </div> </header> <!-- Equipe --> <section class="team-grid"> <div class="glass-card"> <div class="team-badge"><i data-lucide="map-pin" size="14"></i> &nbsp; Unidade T4</div> <div class="team-names">Lucas</div> <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.5rem;">Responsável Geral T4</p> </div> <div class="glass-card"> <div class="team-badge"><i data-lucide="map-pin" size="14"></i> &nbsp; Unidade 85</div> <div class="team-names">Márcio & Jayme</div> <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.5rem;">Responsáveis Gerais 85</p> </div> </section> <!-- Protocolo Logístico --> <section> <div class="glass-card"> <h2><i data-lucide="truck" color="#00e800"></i> Protocolo de Logística e Motorista</h2> <div class="logistics-box"> <div class="logistics-title"> <i data-lucide="alert-circle" size="18"></i> Regra de Ouro: Preparação Antecipada </div> <p style="font-size: 0.95rem; color: var(--text-secondary);"> A coleta do motorista é <strong>flexível</strong> (pode ocorrer a qualquer hora conforme a rota), mas a preparação do estoque é <strong>fixa (manhã)</strong>. </p> </div> <ul style="color: var(--text-secondary); padding-left: 1.5rem; margin-top: 1rem;"> <li style="margin-bottom: 0.5rem;"><strong>08:00 - 09:30:</strong> Horário obrigatório para separar transferências e entradas no sistema, independente de onde o motorista esteja.</li> <li style="margin-bottom: 0.5rem;"><strong>Modus Operandi:</strong> Quando o motorista chegar para coleta (seja 10h ou 14h), a carga já deve estar separada, conferida e na zona de expedição. O motorista não espera separação.</li> <li><strong>Coletas de Clientes:</strong> Itens vendidos para retirada em outra loja têm prioridade absoluta na separação matinal.</li> </ul> </div> </section> <!-- Rotina Diária --> <section> <div class="glass-card"> <h2><i data-lucide="clock" color="#00e800"></i> Rotina Diária Padrão (Seg-Sex)</h2> <div class="timeline-item"> <div class="time-block"> <div class="time">08:00 - 09:30</div> <div class="phase">Bloco Crítico</div> </div> <div class="content"> <h3>Transferências & Expedição</h3> <ul> <li>Verificar Dashboard de Transferências (Pedidos da 85/T4). <span class="instruction">Na prática: Acesse o sistema > Transferências > Filtre "Aguardando Separação".</span> </li> <li>Separar itens físicos e dar baixa imediata via Coletor. <span class="instruction">Na prática: Bipe item por item antes de colocar na caixa. Nunca dê baixa em lote sem conferir.</span> </li> <li>Organizar zona de expedição para chegada do motorista. <span class="instruction">Na prática: Identifique as caixas com fita adesiva ou canetão (ex: DESTINO T4) e deixe na área de saída.</span> </li> </ul> <!-- GATILHO DE EFICIÊNCIA --> <div class="efficiency-alert"> <i data-lucide="zap" size="16"></i> <span> <strong>Nota de Eficiência:</strong> Esta atividade pode ser concluída em menos tempo. Inicie imediatamente o próximo bloco (Recebimento) assim que finalizar esta etapa. </span> </div> </div> </div> <div class="timeline-item"> <div class="time-block"> <div class="time">09:00 - 11:00</div> <div class="phase">Recebimento</div> </div> <div class="content"> <h3>Entrada Inteligente (XML)</h3> <ul> <li><strong>Responsabilidade:</strong> Kuruka (Compras) insere o XML no sistema. <span class="instruction">Na prática: Confirme com Compras se a nota já foi importada antes de começar a bipar.</span> </li> <li>Conferência Cega (Bipagem) obrigatória. <span class="instruction">Na prática: Use o coletor. O sistema deve apitar "Verde" para Ok e "Vermelho" para divergência.</span> </li> <li><strong>Seiri (Triagem):</strong> Identificar avarias no ato da entrada. <span class="instruction">Na prática: Manuseie com cuidado extremo. Não balance as caixas. Abra e verifique visualmente trincas ou barulho de cacos soltos.</span> </li> <li>Endereçamento imediato: Bipar Produto + Prateleira. <span class="instruction">Na prática: Guardou? Bipe o produto e em seguida a etiqueta da prateleira para vincular o endereço.</span> </li> </ul> <!-- DETALHAMENTO EXPANSÍVEL --> <button onclick="toggleProcedure()" class="btn-ghost"> <i data-lucide="clipboard-check" size="16"></i> Protocolo Sistêmico de Conferência (Clique para Abrir) </button> <div id="procedure-box" class="procedure-box"> <div class="procedure-step"> <div class="step-num">1</div> <div class="step-text"> <strong>Envio das Notas (Kuruka/Compras)</strong> Vá em <em>Menu > Suprimentos > Notas de Entrada</em>. Selecione as notas e clique em "Mais Ações" > "Enviar para conferência". (O sistema pode ser configurado para automático). </div> </div> <div class="procedure-step"> <div class="step-num">2</div> <div class="step-text"> <strong>Recebimento de Volumes (Caixas)</strong> Acesse <em>Menu > Suprimentos > Conferência de Compra</em>. Na aba "Aguardando entrada", clique em "Receber mercadorias". Informe a chave de acesso. Se a quantidade de caixas não bater, o sistema alerta a divergência. </div> </div> <div class="procedure-step"> <div class="step-num">3</div> <div class="step-text"> <strong>Conferência de Itens (Bipagem)</strong> A nota vai para a aba "Pronto para conferir". Clique em "Conferir itens". Abra as caixas e bipe produto por produto com o leitor. </div> </div> <div class="procedure-step"> <div class="step-num">4</div> <div class="step-text"> <strong>Finalização & Lançamento</strong> Se tudo estiver certo, a nota vai para "Conferidos". Clique no menu (três pontinhos) e selecione "Lançar estoque". Só agora o produto entra no saldo. <div class="divergence-alert"> <i data-lucide="alert-triangle" size="14" style="vertical-align: middle;"></i> <strong>Deu Erro?</strong> Se houver divergência, a nota vai para a aba "Com problema" para análise gerencial (troca/devolução). </div> </div> </div> </div> <!-- FIM DO DETALHAMENTO --> </div> </div> <div class="timeline-item"> <div class="time-block"> <div class="time">13:00 - 15:30</div> <div class="phase">Manutenção</div> </div> <div class="content"> <h3>Reposição & Ciclo 5S</h3> <ul> <li>Repor "Frente de Loja" via Solicitação Gerencial. <span class="instruction">Na prática: O Gerente gera e entrega a "Lista de Reposição". O estoquista executa a separação e abastecimento.</span> </li> <li><strong>Kit de Batalha:</strong> Executar o foco do dia. <span class="instruction">Na prática: Pegue o carrinho de limpeza + caixas organizadoras e vá para o setor do dia (ver cronograma abaixo).</span> </li> <li>Reagrupar miudezas soltas em caixas organizadoras. <span class="instruction">Na prática: Junte itens soltos (ex: espátulas) em uma caixa plástica e cole uma etiqueta nova identificando o conteúdo.</span> </li> </ul> </div> </div> <div class="timeline-item"> <div class="time-block"> <div class="time">15:30 - 17:00</div> <div class="phase">Fechamento</div> </div> <div class="content"> <h3>Auditoria & Ordem</h3> <ul> <li>Separar entregas de clientes (Ágil/Motorista) para o dia seguinte. <span class="instruction">Na prática: Deixe na área "Expedição Cliente" com a nota fiscal grampeada visivelmente.</span> </li> <li><strong>Regra de Ouro:</strong> <strong>Nenhuma mercadoria dorme no chão.</strong> <span class="instruction">Na prática: 16:50 é hora de levantar tudo. Palletize ou coloque nas prateleiras. Chão livre.</span> </li> </ul> </div> </div> </div> </section> <!-- Cronograma Semanal --> <section> <div class="glass-card"> <h2><i data-lucide="calendar" color="#00e800"></i> Foco Semanal (Rodízio 5S)</h2> <p style="color: var(--text-secondary); margin-bottom: 1.5rem;"> Além da rotina diária, dedicar 1 hora do período da tarde para o foco específico do dia. </p> <div class="weekly-grid"> <!-- Segunda --> <div class="day-card"> <div class="day-header"> Segunda <i data-lucide="clipboard-list" size="16"></i> </div> <div class="day-focus">Auditoria de Transferências</div> <div class="day-action">Revisar pendências de Sábado/Domingo. Focar na reposição de itens de alto giro vendidos no fim de semana.</div> </div> <!-- Terça --> <div class="day-card"> <div class="day-header"> Terça <i data-lucide="package" size="16"></i> </div> <div class="day-focus">Zona Baixa (Pesados)</div> <div class="day-action">Eletrodomésticos e Caixas Fechadas. Alinhar pallets e verificar validades/integridade das caixas.</div> </div> <!-- Quarta --> <div class="day-card"> <div class="day-header"> Quarta <i data-lucide="grid" size="16"></i> </div> <div class="day-focus">Zona Média (Miudezas)</div> <div class="day-action">Talheres e Utensílios. Organizar caixas plásticas. Se a etiqueta não bate com o conteúdo, trocar na hora.</div> </div> <!-- Quinta --> <div class="day-card"> <div class="day-header"> Quinta <i data-lucide="wine" size="16"></i> </div> <div class="day-focus">Zona Alta & Vidros</div> <div class="day-action">Cristais e Taças. Inspeção visual contra trincas (Seiso). Passar pano úmido para tirar pó de vidro.</div> </div> <!-- Sexta --> <div class="day-card"> <div class="day-header"> Sexta <i data-lucide="tag" size="16"></i> </div> <div class="day-focus">Outlet & Curva A</div> <div class="day-action">Levar itens da "Caixa Oportunidade" (sem caixa/peça única) para Gerência precificar. Contagem cíclica Top 5.</div> </div> <!-- Sábado --> <div class="day-card" style="border-color: var(--live-accent-dim);"> <div class="day-header"> Sábado <i data-lucide="shopping-bag" size="16"></i> </div> <div class="day-focus">Suporte Total à Venda</div> <div class="day-action">Foco exclusivo em agilidade de entrega no balcão e apoio aos vendedores. Sem limpeza profunda.</div> </div> </div> </div> </section> <footer style="text-align: center; color: var(--text-secondary); margin-top: 3rem; font-size: 0.8rem;"> <p>Casa Goianita © 2026 • Modus Operandi Estoque V2.3</p> </footer> </div> <script> lucide.createIcons(); function toggleProcedure() { const box = document.getElementById('procedure-box'); if (box.style.display === 'block') { box.style.display = 'none'; } else { box.style.display = 'block'; } } <\/script> </body> </html>`; // Injeta o HTML no Iframe document.getElementById('iframe-estoque-content').srcdoc = estoqueHTML; }); </script> </body> </html>"
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de acompanhamento da Consultoria | Casa Goianita</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts: Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Configuração de Tokens V5 (Live Design System) -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        live: {
+                            deep: '#06192a', /* Fundo Absoluto */
+                            glass: 'rgba(10, 36, 61, 0.75)', /* Vidro Level 2 */
+                            accent: '#00e800', /* Verde Ação */
+                            'accent-dim': 'rgba(0, 232, 0, 0.15)',
+                            text: '#ffffff',
+                            muted: '#cccccc', /* Leitura confortável */
+                            border: 'rgba(255, 255, 255, 0.05)'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                        serif: ['Merriweather', 'serif'],
+                    },
+                    boxShadow: {
+                        'neon': '0 0 10px rgba(0, 232, 0, 0.15)',
+                        'neon-hover': '0 0 25px rgba(0, 232, 0, 0.4)',
+                        'halo': 'inset 0 0 20px rgba(0, 232, 0, 0.05)'
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* === FUNDAMENTOS VISUAIS === */
+        body {
+            background-color: #06192a;
+            color: #cccccc;
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+            position: relative;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* 1. Camada de Fundo (Escura) */
+        .bg-base {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -3;
+            background: #06192a;
+        }
+
+        /* 2. Textura de Cubos (Fixa) */
+        .texture-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background-image: url('https://www.transparenttextures.com/patterns/cubes.png');
+            background-attachment: fixed;
+            opacity: 0.1;
+            transition: opacity 0.3s;
+        }
+
+        /* 3. Efeito Flashlight (Luz do Mouse) */
+        .flashlight-effect {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+            background: radial-gradient(
+                800px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+                rgba(0, 232, 0, 0.15),
+                transparent 40%
+            );
+            mix-blend-mode: screen;
+        }
+
+        /* Animação de Entrada */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-entry {
+            opacity: 0;
+            animation: fadeIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+
+        /* === COMPONENTES === */
+        .kpi-card {
+            background: var(--live-glass, rgba(10, 36, 61, 0.75));
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, rgba(0, 232, 0, 0.1), transparent 70%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(0, 232, 0, 0.3);
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5);
+        }
+
+        .kpi-card:hover::before { opacity: 1; }
+
+        /* Scrollbar Personalizada */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #06192a; }
+        ::-webkit-scrollbar-thumb { background: #1e3a5f; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #00e800; }
+
+        /* Botões de Aba */
+        .tab-button {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.05);
+            color: #9ca3af;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .tab-button:hover {
+            color: #ffffff;
+            border-color: rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.02);
+        }
+
+        .tab-button.active {
+            background: rgba(0, 232, 0, 0.1);
+            border-color: #00e800;
+            color: #00e800;
+            box-shadow: 0 0 15px rgba(0, 232, 0, 0.15);
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.5s ease-out; }
+
+        .link-item {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s;
+        }
+
+        .link-item:hover {
+            background: rgba(0, 232, 0, 0.05);
+            border-color: #00e800;
+            transform: translateX(4px);
+        }
+
+        .iframe-wrapper {
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            background: #ffffff;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            transition: border-color 0.3s;
+        }
+
+        .iframe-wrapper:hover { border-color: rgba(255, 255, 255, 0.2); }
+        .iframe-content { width: 100%; height: 100%; border: none; }
+        .text-brand-green { color: #00e800; }
+        
+        .deliverable-heading {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: white;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+    </style>
+</head>
+<body class="antialiased text-gray-200">
+
+    <div class="bg-base"></div>
+    <div class="texture-layer"></div>
+    <div class="flashlight-effect"></div>
+
+    <div class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 relative z-10">
+        <!-- Header -->
+        <header class="mb-8 animate-entry">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center">
+                <div>
+                    <h1 class="text-3xl font-bold text-white tracking-tight">Dashboard de acompanhamento da Consultoria</h1>
+                    <p class="text-lg text-gray-400 font-serif">Relatório de Planejamento e Entregáveis: Casa Goianita</p>
+                </div>
+                <div class="text-sm text-gray-400 mt-4 sm:mt-0 text-left sm:text-right">
+                    <p><strong class="font-semibold text-gray-200">Período:</strong> outubro de 2025 à março de 2026</p>
+                    <img src="https://raw.githubusercontent.com/EcossistemaLive/Dashboard_goianita/main/Logo%20Live-26.png" alt="Logo Live Consultoria" class="h-10 mt-2 ml-auto opacity-80 hover:opacity-100 transition-opacity">
+                </div>
+            </div>
+            <div class="mt-4 border-b border-gray-700"></div>
+        </header>
+
+        <!-- KPI Section -->
+        <section class="mb-10 animate-entry" style="animation-delay: 0.2s;">
+            <h2 class="text-2xl font-semibold mb-4 text-white">Indicadores de Progresso</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+                <!-- KPI 1 -->
+                <div class="p-6 rounded-xl kpi-card group">
+                    <div class="flex items-center justify-between relative z-10">
+                        <div>
+                            <p class="text-sm font-medium text-gray-400">Diagnósticos e Análises</p>
+                            <p class="text-3xl font-bold text-brand-green">5</p>
+                        </div>
+                        <div class="p-3 rounded-full bg-gray-800 text-brand-green group-hover:bg-live-accent/20 transition-colors">
+                            <i data-lucide="search-check" class="w-7 h-7"></i>
+                        </div>
+                    </div>
+                </div>
+                <!-- KPI 2 -->
+                <div class="p-6 rounded-xl kpi-card group">
+                    <div class="flex items-center justify-between relative z-10">
+                        <div>
+                            <p class="text-sm font-medium text-gray-400 whitespace-nowrap">Entregáveis e Ferramentas</p>
+                            <p class="text-3xl font-bold text-brand-green">18</p>
+                        </div>
+                        <div class="p-3 rounded-full bg-gray-800 text-brand-green group-hover:bg-live-accent/20 transition-colors">
+                            <i data-lucide="package-check" class="w-7 h-7"></i>
+                        </div>
+                    </div>
+                </div>
+                <!-- KPI 3 -->
+                <div class="p-6 rounded-xl kpi-card group">
+                    <div class="flex items-center justify-between relative z-10">
+                        <div>
+                            <p class="text-sm font-medium text-gray-400">Processos Mapeados</p>
+                            <p class="text-3xl font-bold text-brand-green">5</p>
+                        </div>
+                        <div class="p-3 rounded-full bg-gray-800 text-brand-green group-hover:bg-live-accent/20 transition-colors">
+                            <i data-lucide="git-merge" class="w-7 h-7"></i>
+                        </div>
+                    </div>
+                </div>
+                <!-- KPI 4 -->
+                <div class="p-6 rounded-xl kpi-card group">
+                    <div class="flex items-center justify-between relative z-10">
+                        <div>
+                            <p class="text-sm font-medium text-gray-400">Planos Estratégicos</p>
+                            <p class="text-3xl font-bold text-brand-green">1</p>
+                        </div>
+                        <div class="p-3 rounded-full bg-gray-800 text-brand-green group-hover:bg-live-accent/20 transition-colors">
+                            <i data-lucide="file-text" class="w-7 h-7"></i>
+                        </div>
+                    </div>
+                </div>
+                <!-- KPI 5 -->
+                <div class="p-6 rounded-xl kpi-card group">
+                    <div class="flex items-center justify-between relative z-10">
+                        <div>
+                            <p class="text-sm font-medium text-gray-400">Reuniões</p>
+                            <p class="text-3xl font-bold text-brand-green">9</p>
+                        </div>
+                        <div class="p-3 rounded-full bg-gray-800 text-brand-green group-hover:bg-live-accent/20 transition-colors">
+                            <i data-lucide="calendar" class="w-7 h-7"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Content Area -->
+        <section class="animate-entry" style="animation-delay: 0.4s;">
+            <!-- Navigation Tabs -->
+            <div class="flex flex-wrap gap-2 mb-6 border-b border-gray-700 pb-2">
+                <button class="tab-button active px-4 py-3 rounded-lg text-sm flex items-center gap-2" data-tab-target="#tab-blog">
+                    <i data-lucide="book-open" class="w-4 h-4"></i> História do Projeto (Blog)
+                </button>
+                <button class="tab-button px-4 py-3 rounded-lg text-sm flex items-center gap-2" data-tab-target="#tab-diagnostico">
+                    <i data-lucide="search" class="w-4 h-4"></i> Diagnóstico e Análises
+                </button>
+                <button class="tab-button px-4 py-3 rounded-lg text-sm flex items-center gap-2" data-tab-target="#tab-processos">
+                    <i data-lucide="git-merge" class="w-4 h-4"></i> Processos e Operações
+                </button>
+                <button class="tab-button px-4 py-3 rounded-lg text-sm flex items-center gap-2" data-tab-target="#tab-estoque">
+                    <i data-lucide="package-search" class="w-4 h-4"></i> Rotina Estoque (5S)
+                </button>
+                <button class="tab-button px-4 py-3 rounded-lg text-sm flex items-center gap-2" data-tab-target="#tab-treinamento">
+                    <i data-lucide="graduation-cap" class="w-4 h-4"></i> Materiais de Treinamento
+                </button>
+                <button class="tab-button px-4 py-3 rounded-lg text-sm flex items-center gap-2" data-tab-target="#tab-rh">
+                    <i data-lucide="users" class="w-4 h-4"></i> Recrutamento e RH
+                </button>
+                <button class="tab-button px-4 py-3 rounded-lg text-sm flex items-center gap-2" data-tab-target="#tab-governanca">
+                    <i data-lucide="clipboard-check" class="w-4 h-4"></i> Governança e Gestão
+                </button>
+                <button class="tab-button px-4 py-3 rounded-lg text-sm flex items-center gap-2" data-tab-target="#tab-backlog">
+                    <i data-lucide="list-checks" class="w-4 h-4"></i> Backlog
+                </button>
+                <button class="tab-button px-4 py-3 rounded-lg text-sm flex items-center gap-2" data-tab-target="#tab-site-listas">
+                    <i data-lucide="clipboard-list" class="w-4 h-4"></i> Site de Listas
+                </button>
+            </div>
+
+            <!-- Content Container -->
+            <div class="mt-6">
+                <!-- TAB: BLOG -->
+                <div class="tab-content active p-6 rounded-xl kpi-card" id="tab-blog">
+                    <h3 class="text-2xl font-semibold mb-4 text-white font-serif">A Jornada da Casa Goianita: Do Diagnóstico à Estrutura</h3>
+                    <p class="text-gray-300 mb-6 font-serif leading-relaxed">
+                        Bem-vindo ao diário de bordo da nossa consultoria. Esta jornada começou com um mergulho profundo para entender o coração da Casa Goianita. O objetivo não era apenas sugerir mudanças, mas construir, em conjunto, uma fundação sólida para o crescimento sustentável. Cada atividade listada abaixo representa um passo crucial nessa transformação.
+                    </p>
+                    <h4 class="text-xl font-semibold mb-4 flex items-center gap-2 text-white"><i data-lucide="microscope" class="w-6 h-6 text-brand-green"></i>Resumo das Atividades Realizadas</h4>
+                    <ul class="space-y-3 text-sm mb-6">
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 mt-0.5 text-brand-green flex-shrink-0"></i><span><strong class="font-semibold text-gray-200">Proposta Inicial:</strong> Apresentação do diagnóstico e escopo da consultoria.</span></li>
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 mt-0.5 text-brand-green flex-shrink-0"></i><span><strong class="font-semibold text-gray-200">Mapeamento de Processos AS-IS:</strong> Detalhamento das rotinas atuais de estoque e compras.</span></li>
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 mt-0.5 text-brand-green flex-shrink-0"></i><span><strong class="font-semibold text-gray-200">Análise de Concorrência:</strong> Pesquisa de posicionamento digital e sugestões de campanhas.</span></li>
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 mt-0.5 text-brand-green flex-shrink-0"></i><span><strong class="font-semibold text-gray-200">Análise de Sistemas:</strong> Comparativo de ferramentas de integração ERP + E-commerce.</span></li>
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 mt-0.5 text-brand-green flex-shrink-0"></i><span><strong class="font-semibold text-gray-200">Definição de Governança:</strong> Elaboração do Estatuto do Conselho Gestor.</span></li>
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-5 h-5 mt-0.5 text-brand-green flex-shrink-0"></i><span><strong class="font-semibold text-gray-200">Otimização de Estoque:</strong> Criação do manual de implantação 5S.</span></li>
+                        <li class="flex items-start gap-3"><i data-lucide="user-check" class="w-5 h-5 mt-0.5 text-brand-green flex-shrink-0"></i><span><strong class="font-semibold text-gray-200">Contratação Realizada:</strong> Seleção e contratação da vendedora Elayne (T4), Ana Paula (Caixa 135) e Pedro (Vendedor T4).</span></li>
+                    </ul>
+                    <div class="mt-6 pt-4 border-t border-gray-700">
+                        <h4 class="font-semibold text-white">Quadro de Próximos Passos</h4>
+                        <ul class="space-y-3 text-sm text-gray-300 mt-4">
+                            <li class="flex items-start gap-3">
+                                <i data-lucide="square" class="w-5 h-5 text-gray-500 flex-shrink-0"></i> 
+                                <span>Validar a governança com o Conselho Gestor</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <i data-lucide="square" class="w-5 h-5 text-gray-500 flex-shrink-0"></i> 
+                                <span>Mapeamento dos processos financeiros (TO-BE detalhado)</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <i data-lucide="square" class="w-5 h-5 text-gray-500 flex-shrink-0"></i> 
+                                <span>Integração e treinamento das novas contratações (Elayne, Ana Paula e Pedro)</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <i data-lucide="square" class="w-5 h-5 text-gray-500 flex-shrink-0"></i> 
+                                <span>Definir o novo posicionamento da marca</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <i data-lucide="alert-circle" class="w-5 h-5 text-yellow-500 flex-shrink-0"></i> 
+                                <span><strong class="text-white">Revitalização Unidade T4 (Urgente):</strong> Limpeza da calçada, recolocação da fachada (marca atual), limpeza pesada (piso/paredes) e reparos de pintura.</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <i data-lucide="square" class="w-5 h-5 text-gray-500 flex-shrink-0"></i> 
+                                <span>Verificação do Registro da Marca (INPI) e regularização</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <i data-lucide="square" class="w-5 h-5 text-gray-500 flex-shrink-0"></i> 
+                                <span>Processo de branding com o Sebrae</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <i data-lucide="square" class="w-5 h-5 text-gray-500 flex-shrink-0"></i> 
+                                <span>Renovação dos uniformes da equipe</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- TAB: DIAGNOSTICO -->
+                <div class="tab-content p-6 rounded-xl kpi-card" id="tab-diagnostico">
+                    <h3 class="deliverable-heading">Diagnóstico e Proposta Inicial</h3>
+                    <div class="iframe-wrapper h-[600px]">
+                        <iframe class="iframe-content" src="https://casasgoianita.netlify.app/" title="Diagnóstico" loading="lazy"></iframe>
+                    </div>
+                    <h3 class="deliverable-heading">Análise Comparativa de Sistemas</h3>
+                    <div class="iframe-wrapper h-[600px]">
+                        <iframe class="iframe-content" src="https://comparativoerp.netlify.app/" title="Análise ERP" loading="lazy"></iframe>
+                    </div>
+                    <h3 class="deliverable-heading">Pesquisa de Concorrentes</h3>
+                    <div class="iframe-wrapper h-[600px]">
+                        <iframe class="iframe-content" src="https://pesqconc.netlify.app/" title="Concorrência" loading="lazy"></iframe>
+                    </div>
+                </div>
+
+                <!-- TAB: PROCESSOS -->
+                <div class="tab-content p-6 rounded-xl kpi-card" id="tab-processos">
+                    <h3 class="deliverable-heading">Manual de Implantação 5S</h3>
+                    <div class="iframe-wrapper h-[500px]">
+                        <iframe class="iframe-content" src="https://manual5sestoque.netlify.app/?v=1.2" title="Manual 5S" loading="lazy"></iframe>
+                    </div>
+                    <h3 class="deliverable-heading">Mapeamento das Rotinas AS-IS</h3>
+                    <div class="iframe-wrapper h-[500px]">
+                        <iframe class="iframe-content" src="https://as-is-goianita.netlify.app/" title="Rotinas AS-IS" loading="lazy"></iframe>
+                    </div>
+                    <h3 class="deliverable-heading">Processos TO-BE</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                        <div class="iframe-wrapper h-[400px]">
+                            <iframe class="iframe-content" src="https://ecossistemalive.github.io/to-be-vendas-goianita/" title="Vendas" loading="lazy"></iframe>
+                        </div>
+                        <div class="iframe-wrapper h-[400px]">
+                            <iframe class="iframe-content" src="https://ecossistemalive.github.io/to-be-compras-goianita/" title="Compras" loading="lazy"></iframe>
+                        </div>
+                        <div class="iframe-wrapper h-[400px]">
+                            <iframe class="iframe-content" src="https://ecossistemalive.github.io/to-be-financeiro-goianita/" title="Financeiro" loading="lazy"></iframe>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                        <a href="https://drive.google.com/drive/folders/10ww8f9Bl-Y0QuGHmEZDRv2N1-YQoV9U0?usp=sharing" target="_blank" class="p-3 rounded-lg link-item flex items-center gap-2"><i data-lucide="arrow-right-circle" class="w-4 h-4"></i>Processos Financeiros (Drive)</a>
+                        <a href="https://drive.google.com/drive/folders/1utTXDVs1CUu3lrGNbwtT0MfZxjZq2YsL?usp=sharing" target="_blank" class="p-3 rounded-lg link-item flex items-center gap-2"><i data-lucide="arrow-right-circle" class="w-4 h-4"></i>Implantação Olist (Drive)</a>
+                    </div>
+                </div>
+
+                <!-- TAB: ESTOQUE -->
+                <div class="tab-content p-6 rounded-xl kpi-card" id="tab-estoque">
+                    <h3 class="deliverable-heading">Cronograma e Rotina de Estoque (5S)</h3>
+                    <div class="iframe-wrapper h-[800px]">
+                        <iframe id="iframe-estoque-content" class="iframe-content" loading="lazy"></iframe>
+                    </div>
+                </div>
+
+                <!-- TAB: TREINAMENTO -->
+                <div class="tab-content p-6 rounded-xl kpi-card" id="tab-treinamento">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+                        <a href="https://drive.google.com/file/d/1LezPS56TU-UYPzIyGKTDiz_PAZUsuuh2/view?usp=sharing" target="_blank" class="p-4 rounded-lg link-item flex flex-col items-start gap-3 group">
+                            <div class="flex items-center gap-2">
+                                <div class="p-2 bg-blue-900/30 rounded-lg text-blue-400"><i data-lucide="presentation" class="w-6 h-6"></i></div>
+                                <span class="font-semibold text-lg text-gray-200">Treinamento Estoquistas</span>
+                            </div>
+                            <p class="text-gray-400">Capacitação em metodologia 5S.</p>
+                        </a>
+                        <a href="https://chama-pro-vip.netlify.app/" target="_blank" class="p-4 rounded-lg link-item flex flex-col items-start gap-3 group">
+                            <div class="flex items-center gap-2">
+                                <div class="p-2 bg-green-900/30 rounded-lg text-brand-green"><i data-lucide="link" class="w-6 h-6"></i></div>
+                                <span class="font-semibold text-lg text-gray-200">Formulário Sorteio VIP</span>
+                            </div>
+                            <p class="text-gray-400">Automação para captura de leads.</p>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- TAB: RH -->
+                <div class="tab-content p-6 rounded-xl kpi-card" id="tab-rh">
+                    <h3 class="deliverable-heading">Processos de Seleção</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="iframe-wrapper h-[400px]">
+                            <iframe class="iframe-content" src="https://manual-recrutamento.netlify.app/" title="Recrutamento" loading="lazy"></iframe>
+                        </div>
+                        <div class="iframe-wrapper h-[400px]">
+                            <iframe class="iframe-content" src="https://processo-entrevista.netlify.app/" title="Entrevistas" loading="lazy"></iframe>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB: GOVERNANÇA -->
+                <div class="tab-content p-6 rounded-xl kpi-card" id="tab-governanca">
+                    <h3 class="deliverable-heading">Estatuto do Conselho Gestor</h3>
+                    <div class="iframe-wrapper h-[700px]">
+                        <iframe class="iframe-content" src="https://apresentacao-conselho-goianita.netlify.app/" title="Estatuto" loading="lazy"></iframe>
+                    </div>
+                </div>
+
+                <!-- TAB: BACKLOG -->
+                <div class="tab-content p-6 rounded-xl kpi-card" id="tab-backlog">
+                    <h3 class="deliverable-heading">Sugestões de Implementação</h3>
+                    <ul class="space-y-4 text-sm">
+                        <li class="flex items-center gap-3 p-3 bg-white/5 rounded-lg border border-white/10">
+                            <i data-lucide="square" class="w-5 h-5 text-gray-500"></i>
+                            <span>Treinamento comercial focado na nova visão da marca.</span>
+                        </li>
+                        <li class="flex items-center gap-3 p-3 bg-white/5 rounded-lg border border-white/10">
+                            <i data-lucide="square" class="w-5 h-5 text-gray-500"></i>
+                            <span>Programa de Gamificação para vendedores.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- TAB: SITE LISTAS -->
+                <div class="tab-content p-6 rounded-xl kpi-card" id="tab-site-listas">
+                    <h3 class="deliverable-heading">Briefing Técnico: E-commerce & Listas</h3>
+                    <div class="iframe-wrapper h-[600px] mb-6">
+                        <iframe class="iframe-content" src="https://ecossistemalive.github.io/briefing_listas/" title="Briefing 1" loading="lazy"></iframe>
+                    </div>
+                    <h3 class="deliverable-heading">Detalhamento: Listas de Casamento</h3>
+                    <div class="iframe-wrapper h-[600px]">
+                        <iframe class="iframe-content" src="https://ecossistemalive.github.io/Briefing-Listas/" title="Briefing 2" loading="lazy"></iframe>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="mt-16 text-center border-t border-white/5 pt-8 pb-8">
+            <p class="text-live-muted text-sm font-light">
+                © 2026 Live Consultoria. Documento confidencial para uso interno da Casa Goianita.
+            </p>
+        </footer>
+    </div>
+
+    <!-- Scripts de Interatividade -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+
+            // Tabs Logic
+            const tabButtons = document.querySelectorAll('[data-tab-target]');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    button.classList.add('active');
+                    const target = document.querySelector(button.dataset.tabTarget);
+                    target.classList.add('active');
+                });
+            });
+
+            // Flashlight Effect
+            document.addEventListener('mousemove', (e) => {
+                document.documentElement.style.setProperty('--mouse-x', `${e.clientX}px`);
+                document.documentElement.style.setProperty('--mouse-y', `${e.clientY}px`);
+            });
+
+            // Injeção do conteúdo da aba Estoque
+            const estoqueHTML = `
+            <!DOCTYPE html>
+            <html lang="pt-BR">
+            <head>
+                <meta charset="UTF-8">
+                <script src="https://unpkg.com/lucide@latest"><\/script>
+                <style>
+                    :root {
+                        --live-deep: #06192a;
+                        --live-accent: #00e800;
+                        --text-primary: #ffffff;
+                        --text-secondary: #94a3b8;
+                    }
+                    body { background: var(--live-deep); color: white; font-family: sans-serif; padding: 20px; }
+                    .card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+                    h2 { color: var(--live-accent); border-bottom: 1px solid rgba(0,232,0,0.2); padding-bottom: 10px; }
+                    .btn-action { background: rgba(0,232,0,0.1); color: var(--live-accent); padding: 10px 20px; border-radius: 8px; text-decoration: none; display: inline-block; font-weight: bold; }
+                    .timeline { border-left: 2px solid var(--live-accent); padding-left: 20px; margin: 20px 0; }
+                    .time-item { margin-bottom: 20px; }
+                    .time { font-weight: bold; color: var(--live-accent); }
+                </style>
+            </head>
+            <body>
+                <h1>Manual de Operações de Estoque 5S</h1>
+                <div class="card">
+                    <h2>Protocolo de Logística</h2>
+                    <p>Coleta flexível, mas preparação fixa (08h00 - 09h30).</p>
+                    <a href="https://drive.google.com/file/d/1LezPS56TU-UYPzIyGKTDiz_PAZUsuuh2/view?usp=sharing" target="_blank" class="btn-action">Acessar Manual Completo</a>
+                </div>
+                <div class="timeline">
+                    <div class="time-item"><div class="time">08:00 - 09:30</div><p>Transferências e Expedição (Foco Crítico).</p></div>
+                    <div class="time-item"><div class="time">09:00 - 11:00</div><p>Recebimento e Bipagem (Conferência Cega).</p></div>
+                    <div class="time-item"><div class="time">13:00 - 15:30</div><p>Reposição e Manutenção 5S.</p></div>
+                    <div class="time-item"><div class="time">15:30 - 17:00</div><p>Auditoria e Ordem: "Nenhuma mercadoria dorme no chão".</p></div>
+                </div>
+                <script>lucide.createIcons();<\/script>
+            </body>
+            </html>`;
+            document.getElementById('iframe-estoque-content').srcdoc = estoqueHTML;
+        });
+    </script>
+</body>
+</html>
